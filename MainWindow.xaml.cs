@@ -19,6 +19,14 @@ namespace PaintOverlay
         public MainWindow()
         {
             InitializeComponent();
+            KeyDown += new KeyEventHandler(OnButtonKeyDown);
+        }
+        private void OnButtonKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.OemTilde)
+            {
+                DrawingCanvas.Visibility = DrawingCanvas.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            }
         }
     }
 }

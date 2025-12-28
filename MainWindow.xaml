@@ -5,8 +5,26 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PaintOverlay"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
-    </Grid>
+        Title="MainWindow" Height="450" Width="800"
+        WindowState="Maximized" 
+        AllowsTransparency="True"
+        WindowStyle="None"
+        Background="Transparent">
+    <DockPanel>
+        <UniformGrid DockPanel.Dock="Top" Rows="1" Columns="10" Height="50">
+            <UniformGrid.Background>
+                <SolidColorBrush Color="Gray" Opacity="0.9"/>
+            </UniformGrid.Background>
+            <TextBlock Text="Color" TextAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock Text="Brush" TextAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock Text="Size:" TextAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock Text="Opacity:" TextAlignment="Center" VerticalAlignment="Center"/>
+            <Rectangle x:Name="ColorPreview" Width="30" Height="30" Stroke="Black"/>
+        </UniformGrid>
+        <Canvas DockPanel.Dock="Top" x:Name="DrawingCanvas">
+            <Canvas.Background>
+                <SolidColorBrush Color="White" Opacity="0.01"/>
+            </Canvas.Background>
+        </Canvas>
+    </DockPanel>
 </Window>
