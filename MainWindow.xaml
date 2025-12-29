@@ -9,7 +9,8 @@
         WindowState="Maximized" 
         AllowsTransparency="True"
         WindowStyle="None"
-        Background="Transparent">
+        Background="Transparent"
+        x:Name="PaintWindow">
     <DockPanel>
         <UniformGrid DockPanel.Dock="Top" Rows="1" Columns="10" Height="50">
             <UniformGrid.Background>

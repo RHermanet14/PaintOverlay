@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+
 namespace PaintOverlay
 {
     /// <summary>
@@ -16,16 +17,19 @@ namespace PaintOverlay
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly KeyboardHook hook;
         public MainWindow()
         {
             InitializeComponent();
-            KeyDown += new KeyEventHandler(OnButtonKeyDown);
+            hook = new KeyboardHook();
+            KeyboardHook.KeyboardInput += OnKeyboardInput;
         }
-        private void OnButtonKeyDown(object sender, KeyEventArgs e)
+        private void OnKeyboardInput(object? sender, EventArgs e)
         {
-            if (e.Key == Key.OemTilde)
+            if (Keyboard.IsKeyDown(Key.Oem3))
             {
                 DrawingCanvas.Visibility = DrawingCanvas.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+                this.Activate();
             }
         }
     }
