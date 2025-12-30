@@ -12,7 +12,7 @@
         Background="Transparent"
         x:Name="PaintWindow">
     <DockPanel>
-        <UniformGrid DockPanel.Dock="Top" Rows="1" Columns="10" Height="50">
+        <UniformGrid DockPanel.Dock="Top" Rows="1" Columns="10" Height="50" x:Name="DrawingMenu">
             <UniformGrid.Background>
                 <SolidColorBrush Color="Gray" Opacity="0.9"/>
             </UniformGrid.Background>
@@ -21,11 +21,14 @@
             <TextBlock Text="Size:" TextAlignment="Center" VerticalAlignment="Center"/>
             <TextBlock Text="Opacity:" TextAlignment="Center" VerticalAlignment="Center"/>
             <Rectangle x:Name="ColorPreview" Width="30" Height="30" Stroke="Black"/>
+            <Button x:Name="ResetButton" Content="Reset" Click="ResetButton_Click"/>
+            <Button x:Name="SaveButton" Content="Save" Click="SaveButton_Click"/>
+            <Button x:Name="HelpButton" Content="Help" Click="HelpButton_Click"/>
         </UniformGrid>
-        <Canvas DockPanel.Dock="Top" x:Name="DrawingCanvas">
-            <Canvas.Background>
+        <InkCanvas DockPanel.Dock="Top" x:Name="DrawingCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" UseCustomCursor="True" Cursor="Hand">
+            <InkCanvas.Background>
                 <SolidColorBrush Color="White" Opacity="0.01"/>
-            </Canvas.Background>
-        </Canvas>
+            </InkCanvas.Background>
+        </InkCanvas>
     </DockPanel>
 </Window>
