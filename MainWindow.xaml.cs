@@ -53,6 +53,35 @@ namespace PaintOverlay
             {
                 DrawingMenu.Visibility = DrawingMenu.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
             }
+            if (Keyboard.IsKeyDown(Key.Z) && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                Undo_Canvas();
+            }
+        }
+
+        private void Undo_Canvas()
+        {
+            if (DrawingCanvas.Strokes.Count > 0)
+                DrawingCanvas.Strokes.RemoveAt(DrawingCanvas.Strokes.Count - 1);
+        }
+
+        private void Size_Changed(object sender, TextChangedEventArgs e)
+        {
+            if (int.TryParse(SizeInput.Text, out int size))
+            {
+                if (size > 100)
+                    size = 100;
+                else if (size < 1)
+                    size = 1;
+                SizeInput.Text = size.ToString();
+                PenAttributes.Height = size;
+                PenAttributes.Width = size;
+            }
+        }
+
+        private void Color_Changed(object sender, MouseButtonEventArgs e)
+        {
+            MessageBox.Show("Hi :3");
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
