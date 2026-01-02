@@ -16,7 +16,6 @@
             <UniformGrid.Background>
                 <SolidColorBrush Color="Gray" Opacity="0.9"/>
             </UniformGrid.Background>
-            
             <TextBlock Text="Thickness" TextAlignment="Center" VerticalAlignment="Center"/>
             <TextBox x:Name="SizeInput" Text="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="30px" MaxLength="4" TextChanged="Size_Changed"/>
             <TextBlock Text="Color" TextAlignment="Center" VerticalAlignment="Center"/>
@@ -25,7 +24,7 @@
             <Button x:Name="ResetButton" Content="Reset" Click="ResetButton_Click"/>
             <Button x:Name="SaveButton" Content="Save" Click="SaveButton_Click"/>
             <Button x:Name="HelpButton" Content="Help" Click="HelpButton_Click"/>
-            
+            <Button x:Name="ExitButton" Content="Exit" Click="ExitButton_Click"/>
         </UniformGrid>
         <InkCanvas DockPanel.Dock="Top" x:Name="DrawingCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" UseCustomCursor="True" Cursor="Hand">
             <InkCanvas.Background>

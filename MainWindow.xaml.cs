@@ -1,14 +1,18 @@
-﻿using System.Text;
+﻿using System.Drawing.Imaging;
+using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
+using System.Windows.Ink;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Windows.Ink;
+using System.Xml.Linq;
 
 namespace PaintOverlay
 {
@@ -33,7 +37,6 @@ namespace PaintOverlay
             IsHighlighter = true,
             StylusTip = StylusTip.Rectangle,
         };
-
 
         public MainWindow()
         {
@@ -81,7 +84,7 @@ namespace PaintOverlay
 
         private void Color_Changed(object sender, MouseButtonEventArgs e)
         {
-            MessageBox.Show("Hi :3");
+            System.Windows.MessageBox.Show("Hi :3");
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
@@ -91,12 +94,23 @@ namespace PaintOverlay
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Will copy picture of desktop with ink canvas without top bar into clipboard");
+            System.Drawing.Rectangle bounds = Screen.GetBounds(System.Drawing.Point.Empty);
+            using Bitmap bitmap = new(bounds.Width, bounds.Height);
+            using (Graphics g = Graphics.FromImage(bitmap))
+            {
+                g.CopyFromScreen(System.Drawing.Point.Empty, System.Drawing.Point.Empty, bounds.Size);
+            }
+            System.Windows.Forms.Clipboard.SetImage(bitmap);
         }
 
         private void HelpButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Will open new window where keybinds can be changed\nRight Alt to toggle canvas\n Right control to hide top bar");
+            System.Windows.MessageBox.Show("Will open new window where keybinds can be changed\nRight Alt to toggle canvas\n Right control to hide top bar");
+        }
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Application.Current.Shutdown();
         }
     }
 }
