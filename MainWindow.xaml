@@ -20,6 +20,11 @@
             <TextBox x:Name="SizeInput" Text="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="30px" MaxLength="4" TextChanged="Size_Changed"/>
             <TextBlock Text="Color" TextAlignment="Center" VerticalAlignment="Center"/>
             <Rectangle x:Name="ColorPreview" Width="30" Height="30" Fill="Black" MouseLeftButtonDown="Color_Changed"/>
+            <ComboBox x:Name="Brush" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" SelectedIndex="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" SelectionChanged="Brush_Changed">
+                <ComboBoxItem Content="Pen"/>
+                <ComboBoxItem Content="Highlighter" />
+                <ComboBoxItem Content="Eraser" />
+            </ComboBox>
             <TextBlock Text="Brush" TextAlignment="Center" VerticalAlignment="Center"/>
             <Button x:Name="ResetButton" Content="Reset" Click="ResetButton_Click"/>
             <Button x:Name="SaveButton" Content="Save" Click="SaveButton_Click"/>

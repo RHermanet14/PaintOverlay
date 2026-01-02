@@ -22,12 +22,15 @@ namespace PaintOverlay
     public partial class MainWindow : Window
     {
         private readonly KeyboardHook hook;
+        private enum BrushTypes {Pen, Highlighter, Eraser};
+        #region Brush Types
         private readonly DrawingAttributes PenAttributes = new()
         {
             Color = Colors.Black,
             Height = 2,
             Width = 2,
         };
+
         private readonly DrawingAttributes HighlighterAttributes = new()
         {
             Color = Colors.Yellow,
@@ -37,6 +40,7 @@ namespace PaintOverlay
             IsHighlighter = true,
             StylusTip = StylusTip.Rectangle,
         };
+        #endregion
 
         public MainWindow()
         {
@@ -70,6 +74,7 @@ namespace PaintOverlay
 
         private void Size_Changed(object sender, TextChangedEventArgs e)
         {
+            if (Brush == null) return;
             if (int.TryParse(SizeInput.Text, out int size))
             {
                 if (size > 100)
@@ -77,14 +82,60 @@ namespace PaintOverlay
                 else if (size < 1)
                     size = 1;
                 SizeInput.Text = size.ToString();
-                PenAttributes.Height = size;
-                PenAttributes.Width = size;
+                switch((BrushTypes)Brush.SelectedIndex)
+                {
+                    case BrushTypes.Pen:
+                        PenAttributes.Height = size;
+                        PenAttributes.Width = size;
+                        break;
+                    case BrushTypes.Highlighter:
+                        HighlighterAttributes.Height = size;
+                        HighlighterAttributes.Width = size / 5 > 0 ? size / 5 : 1;
+                        break;
+                    case BrushTypes.Eraser:
+                        DrawingCanvas.EraserShape = new RectangleStylusShape(size, size);
+                        break;
+                    default:
+                        PenAttributes.Height = size;
+                        PenAttributes.Width = size;
+                        break;
+                }
+                
             }
         }
 
         private void Color_Changed(object sender, MouseButtonEventArgs e)
         {
             System.Windows.MessageBox.Show("Hi :3");
+        }
+
+        private void Brush_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            if (DrawingCanvas == null)
+                return;
+            DrawingAttributes temp;
+            switch((BrushTypes)Brush.SelectedIndex)
+            {
+                case BrushTypes.Pen:
+                    temp = PenAttributes;
+                    break;
+                case BrushTypes.Highlighter:
+                    temp = HighlighterAttributes;
+                    break;
+                case BrushTypes.Eraser:
+                    DrawingCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
+                    if (int.TryParse(SizeInput.Text, out int size))
+                        DrawingCanvas.EraserShape = new EllipseStylusShape(size,size);
+                    else
+                        DrawingCanvas.EraserShape = new EllipseStylusShape(5, 5);
+                    return;
+                default:
+                    temp = PenAttributes;
+                    break;
+            }
+            DrawingCanvas.DefaultDrawingAttributes = temp;
+            DrawingCanvas.EditingMode = InkCanvasEditingMode.Ink;
+            SizeInput.Text = temp.Height.ToString();
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
