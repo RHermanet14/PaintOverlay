@@ -100,13 +100,18 @@ namespace PaintOverlay
                         PenAttributes.Width = size;
                         break;
                 }
-                
             }
         }
 
-        private void Color_Changed(object sender, MouseButtonEventArgs e)
+        private void Open_Color_Window(object sender, MouseButtonEventArgs e)
         {
-            System.Windows.MessageBox.Show("Hi :3");
+            ColorWindow cw = new(this);
+            cw.Show();
+        }
+
+        internal void Color_Changed()
+        {
+
         }
 
         private void Brush_Changed(object sender, SelectionChangedEventArgs e)
