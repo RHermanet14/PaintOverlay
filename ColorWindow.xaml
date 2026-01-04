@@ -25,32 +25,32 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Rectangle Stroke="Black"/>
-            <Rectangle Fill="Black" Grid.Column="1"/>
-            <Rectangle Fill="Red" Stroke="Black" Grid.Column="2"/>
-            <Rectangle Fill="Blue" Stroke="Black" Grid.Column="3"/>
-            <Rectangle Fill="Yellow" Stroke="Black" Grid.Column="4"/>
-            <Rectangle Fill="Green" Stroke="Black" Grid.Column="5"/>
-            <Rectangle Fill="Purple" Stroke="Black" Grid.Column="6"/>
-            <Rectangle Fill="Orange" Stroke="Black" Grid.Column="7"/>
+            <Rectangle x:Name="White" Stroke="Black" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Black" Fill="Black" Grid.Column="1" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Red" Fill="Red" Stroke="Black" Grid.Column="2" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Blue" Fill="Blue" Stroke="Black" Grid.Column="3" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Yellow" Fill="Yellow" Stroke="Black" Grid.Column="4" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Green" Fill="Green" Stroke="Black" Grid.Column="5" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Purple" Fill="Purple" Stroke="Black" Grid.Column="6" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Orange" Fill="Orange" Stroke="Black" Grid.Column="7" MouseLeftButtonDown="Color_Selected"/>
 
-            <Rectangle Fill="Pink" Stroke="Black" Grid.Row="1"/>
-            <Rectangle Fill="Gold" Stroke="Black" Grid.Row="1" Grid.Column="1"/>
-            <Rectangle Fill="Gray" Stroke="Black" Grid.Row="1" Grid.Column="2"/>
-            <Rectangle Fill="LightGray" Stroke="Black" Grid.Row="1" Grid.Column="3"/>
-            <Rectangle Fill="Maroon" Stroke="Black" Grid.Row="1" Grid.Column="4"/>
-            <Rectangle Fill="DeepSkyBlue" Stroke="Black" Grid.Row="1" Grid.Column="5"/>
-            <Rectangle Fill="HotPink" Stroke="Black" Grid.Row="1" Grid.Column="6"/>
-            <Rectangle Fill="LawnGreen" Stroke="Black" Grid.Row="1" Grid.Column="7"/>
+            <Rectangle x:Name="Pink" Fill="Pink" Stroke="Black" Grid.Row="1" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Gold" Fill="Gold" Stroke="Black" Grid.Row="1" Grid.Column="1" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Gray" Fill="Gray" Stroke="Black" Grid.Row="1" Grid.Column="2" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Light_Gray" Fill="LightGray" Stroke="Black" Grid.Row="1" Grid.Column="3" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Maroon" Fill="Maroon" Stroke="Black" Grid.Row="1" Grid.Column="4" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Deep_Sky_Blue" Fill="DeepSkyBlue" Stroke="Black" Grid.Row="1" Grid.Column="5" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Hot_Pink" Fill="HotPink" Stroke="Black" Grid.Row="1" Grid.Column="6" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Lawn_Green" Fill="LawnGreen" Stroke="Black" Grid.Row="1" Grid.Column="7" MouseLeftButtonDown="Color_Selected"/>
 
-            <Rectangle Fill="MediumVioletRed" Stroke="Black" Grid.Row="2"/>
-            <Rectangle Fill="MediumPurple" Stroke="Black" Grid.Row="2" Grid.Column="1"/>
-            <Rectangle Fill="Navy" Stroke="Black" Grid.Row="2" Grid.Column="2"/>
-            <Rectangle Fill="DarkGoldenrod" Stroke="Black" Grid.Row="2" Grid.Column="3"/>
-            <Rectangle Fill="SaddleBrown" Stroke="Black" Grid.Row="2" Grid.Column="4"/>
-            <Rectangle Fill="PaleGreen" Stroke="Black" Grid.Row="2" Grid.Column="5"/>
-            <Rectangle Fill="BlanchedAlmond" Stroke="Black" Grid.Row="2" Grid.Column="6"/>
-            <Rectangle Fill="PeachPuff" Stroke="Black" Grid.Row="2" Grid.Column="7"/>
+            <Rectangle x:Name="Medium_Violet_Red" Fill="MediumVioletRed" Stroke="Black" Grid.Row="2" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Medium_Purple" Fill="MediumPurple" Stroke="Black" Grid.Row="2" Grid.Column="1" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Navy" Fill="Navy" Stroke="Black" Grid.Row="2" Grid.Column="2" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Dark_Goldenrod" Fill="DarkGoldenrod" Stroke="Black" Grid.Row="2" Grid.Column="3" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Saddle_Brown" Fill="SaddleBrown" Stroke="Black" Grid.Row="2" Grid.Column="4" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Pale_Green" Fill="PaleGreen" Stroke="Black" Grid.Row="2" Grid.Column="5" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Blanched_Almond" Fill="BlanchedAlmond" Stroke="Black" Grid.Row="2" Grid.Column="6" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Peach_Puff" Fill="PeachPuff" Stroke="Black" Grid.Row="2" Grid.Column="7" MouseLeftButtonDown="Color_Selected"/>
         </Grid>
         <Label Content="Add Custom Color" ToolTip="Enter a number from 0 to 255 for each input, then click on a box."/>
         <Separator Background="Gray"/>
@@ -65,14 +65,14 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Rectangle Stroke="Black"/>
-            <Rectangle Stroke="Black" Grid.Column="1"/>
-            <Rectangle Stroke="Black" Grid.Column="2"/>
-            <Rectangle Stroke="Black" Grid.Column="3"/>
-            <Rectangle Stroke="Black" Grid.Column="4"/>
-            <Rectangle Stroke="Black" Grid.Column="5"/>
-            <Rectangle Stroke="Black" Grid.Column="6"/>
-            <Rectangle Stroke="Black" Grid.Column="7"/>
+            <Rectangle x:Name="Custom_1" Stroke="Black"/>
+            <Rectangle x:Name="Custom_2" Stroke="Black" Grid.Column="1" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Custom_3" Stroke="Black" Grid.Column="2" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Custom_4" Stroke="Black" Grid.Column="3" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Custom_5" Stroke="Black" Grid.Column="4" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Custom_6" Stroke="Black" Grid.Column="5" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Custom_7" Stroke="Black" Grid.Column="6" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Custom_8" Stroke="Black" Grid.Column="7" MouseLeftButtonDown="Color_Selected"/>
         </Grid>
 
         <StackPanel Orientation="Horizontal">
@@ -86,7 +86,7 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
             <TextBlock Text="Current Brush Color: "/>
-            <TextBlock Text="Black"/>
+            <TextBlock x:Name="ColorName" Text="Black"/>
         </StackPanel>
 
     </StackPanel>

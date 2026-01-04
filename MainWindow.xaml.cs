@@ -1,4 +1,5 @@
-﻿using System.Drawing.Imaging;
+﻿using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -109,23 +110,39 @@ namespace PaintOverlay
             cw.Show();
         }
 
-        internal void Color_Changed()
+        internal void Color_Changed(System.Windows.Shapes.Rectangle rect)
         {
-
+            DrawingCanvas.Visibility = Visibility.Visible;
+            System.Windows.Media.Color color = ((SolidColorBrush)rect.Fill).Color;
+            switch ((BrushTypes)Brush.SelectedIndex)
+            {
+                case BrushTypes.Pen:
+                    PenAttributes.Color = color;
+                    break;
+                case BrushTypes.Highlighter:
+                    HighlighterAttributes.Color = color;
+                    break;
+                case BrushTypes.Eraser:
+                    return;
+                default:
+                    PenAttributes.Color = color;
+                    break;
+            }
+            ColorPreview.Fill = rect.Fill;
         }
 
         private void Brush_Changed(object sender, SelectionChangedEventArgs e)
         {
             if (DrawingCanvas == null)
                 return;
-            DrawingAttributes temp;
+            DrawingAttributes brush_attributes;
             switch((BrushTypes)Brush.SelectedIndex)
             {
                 case BrushTypes.Pen:
-                    temp = PenAttributes;
+                    brush_attributes = PenAttributes;
                     break;
                 case BrushTypes.Highlighter:
-                    temp = HighlighterAttributes;
+                    brush_attributes = HighlighterAttributes;
                     break;
                 case BrushTypes.Eraser:
                     DrawingCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
@@ -133,14 +150,18 @@ namespace PaintOverlay
                         DrawingCanvas.EraserShape = new EllipseStylusShape(size,size);
                     else
                         DrawingCanvas.EraserShape = new EllipseStylusShape(5, 5);
+                    ColorPreview.Fill = System.Windows.Media.Brushes.White;
                     return;
                 default:
-                    temp = PenAttributes;
+                    brush_attributes = PenAttributes;
                     break;
             }
-            DrawingCanvas.DefaultDrawingAttributes = temp;
+            DrawingCanvas.DefaultDrawingAttributes = brush_attributes;
             DrawingCanvas.EditingMode = InkCanvasEditingMode.Ink;
-            SizeInput.Text = temp.Height.ToString();
+            SizeInput.Text = brush_attributes.Height.ToString();
+            SolidColorBrush preview_color = new(brush_attributes.Color);
+            ColorPreview.Fill = preview_color;
+
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
