@@ -161,7 +161,6 @@ namespace PaintOverlay
             SizeInput.Text = brush_attributes.Height.ToString();
             SolidColorBrush preview_color = new(brush_attributes.Color);
             ColorPreview.Fill = preview_color;
-
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)

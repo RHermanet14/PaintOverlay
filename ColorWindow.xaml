@@ -65,24 +65,24 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Rectangle x:Name="Custom_1" Stroke="Black"/>
-            <Rectangle x:Name="Custom_2" Stroke="Black" Grid.Column="1" MouseLeftButtonDown="Color_Selected"/>
-            <Rectangle x:Name="Custom_3" Stroke="Black" Grid.Column="2" MouseLeftButtonDown="Color_Selected"/>
-            <Rectangle x:Name="Custom_4" Stroke="Black" Grid.Column="3" MouseLeftButtonDown="Color_Selected"/>
-            <Rectangle x:Name="Custom_5" Stroke="Black" Grid.Column="4" MouseLeftButtonDown="Color_Selected"/>
-            <Rectangle x:Name="Custom_6" Stroke="Black" Grid.Column="5" MouseLeftButtonDown="Color_Selected"/>
-            <Rectangle x:Name="Custom_7" Stroke="Black" Grid.Column="6" MouseLeftButtonDown="Color_Selected"/>
-            <Rectangle x:Name="Custom_8" Stroke="Black" Grid.Column="7" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="Custom_1" Fill="White" Stroke="Black" MouseLeftButtonDown="Custom_Color_Selected"/>
+            <Rectangle x:Name="Custom_2" Fill="White" Stroke="Black" Grid.Column="1" MouseLeftButtonDown="Custom_Color_Selected"/>
+            <Rectangle x:Name="Custom_3" Fill="White" Stroke="Black" Grid.Column="2" MouseLeftButtonDown="Custom_Color_Selected"/>
+            <Rectangle x:Name="Custom_4" Fill="White" Stroke="Black" Grid.Column="3" MouseLeftButtonDown="Custom_Color_Selected"/>
+            <Rectangle x:Name="Custom_5" Fill="White" Stroke="Black" Grid.Column="4" MouseLeftButtonDown="Custom_Color_Selected"/>
+            <Rectangle x:Name="Custom_6" Fill="White" Stroke="Black" Grid.Column="5" MouseLeftButtonDown="Custom_Color_Selected"/>
+            <Rectangle x:Name="Custom_7" Fill="White" Stroke="Black" Grid.Column="6" MouseLeftButtonDown="Custom_Color_Selected"/>
+            <Rectangle x:Name="Custom_8" Fill="White" Stroke="Black" Grid.Column="7" MouseLeftButtonDown="Custom_Color_Selected"/>
         </Grid>
 
         <StackPanel Orientation="Horizontal">
             <TextBlock Text="R:"/>
-            <TextBox Width="30"/>
+            <TextBox x:Name="RInput" Width="30" TextChanged="Color_Changed"/>
             <TextBlock Text="G:" Margin="5,0,0,0"/>
-            <TextBox Width="30"/>
+            <TextBox x:Name="GInput" Width="30" TextChanged="Color_Changed"/>
             <TextBlock Text="B:" Margin="5,0,0,0"/>
-            <TextBox Width="30"/>
-            <Button Content="Save Color" Margin="20,0,0,0" Width="75"/>
+            <TextBox x:Name="BInput" Width="30" TextChanged="Color_Changed"/>
+            <Button Content="Save Color" Margin="20,0,0,0" Width="75" Click="Color_Saved"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
             <TextBlock Text="Current Brush Color: "/>
