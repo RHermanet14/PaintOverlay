@@ -34,15 +34,13 @@ namespace PaintOverlay
 
         private void Set_Custom_Colors()
         {
-            //Properties.Settings.Default.Reset();
-            //Properties.Settings.Default.Save();
             foreach (System.Windows.Shapes.Rectangle rec in CustomColorsGrid.Children)
             {
                 Custom_Color_List.Add(rec);
             }
             RInput.Text = GInput.Text = BInput.Text = "255";
             string temp = Properties.Settings.Default.SavedColors;
-            System.Windows.MessageBox.Show(Properties.Settings.Default.SavedColors);
+            //System.Windows.MessageBox.Show(Properties.Settings.Default.SavedColors);
             int i = 0, index;
             List<string> values = [];
             while ((index = temp.IndexOf('_')) != -1)
@@ -64,6 +62,8 @@ namespace PaintOverlay
 
         private void Color_Selected(object sender, MouseButtonEventArgs e)
         {
+            //Properties.Settings.Default.Reset();
+            //Properties.Settings.Default.Save();
             if (e.Source == null) return;
             if (e.Source is System.Windows.Shapes.Rectangle rect)
             {
@@ -106,20 +106,20 @@ namespace PaintOverlay
 
         private void Custom_Color_Selected(object sender, MouseButtonEventArgs e)
         {
-            if (CustomColor == null)
-                return;
             if (e.Source is System.Windows.Shapes.Rectangle rect)
             {
-                if (SavingCustomColor == true)
-                    rect.Fill = CustomColor;
-                _main.Color_Changed(rect);
-                string temp = rect.Name;
-                temp = temp.Replace('_', ' ');
-                ColorName.Text = temp;
                 try
                 {
                     int.TryParse(rect.Name.Substring(rect.Name.IndexOf('_') + 1), out int index); // DANGEROUS!!!
-                    Modify_Custom_Color_Presets(index - 1);
+                    if (SavingCustomColor == true && CustomColor != null)
+                    {
+                        rect.Fill = CustomColor;
+                        Modify_Custom_Color_Presets(index - 1);
+                    }
+                    _main.Color_Changed(rect);
+                    string temp = rect.Name;
+                    temp = temp.Replace('_', ' ');
+                    ColorName.Text = temp;
                 } catch(Exception ex)
                 {
                     System.Windows.MessageBox.Show($"You probably didn't use the correct naming convention: {ex.Message}");
@@ -132,30 +132,33 @@ namespace PaintOverlay
         {
             try
             {
-                string temp = RColor.ToString() + "_" + GColor.ToString() + "_" + BColor.ToString();
+                string temp = RColor.ToString() + "_" + GColor.ToString() + "_" + BColor.ToString() + "_";
                 int start = 0, end = 0;
                 int start_index = index * 3;
                 int end_index = start_index + 3;
-                //System.Windows.MessageBox.Show($"{index}, {start_index}, {end_index}");
-                for (int i = 0; i < end_index; i++) // 3 - 6
+                //System.Windows.MessageBox.Show($"{Custom_Color_List.Count}");
+                for (int i = 0; i < end_index; i++)
                 {
                     if (start_index > i)
                         start = Properties.Settings.Default.SavedColors.IndexOf('_', start) + 1; 
-                    end = Properties.Settings.Default.SavedColors.IndexOf('_', end) + 1; // adds 2 each time
+                    end = Properties.Settings.Default.SavedColors.IndexOf('_', end) + 1;
                 }
+                //System.Windows.MessageBox.Show("2");
                 //System.Windows.MessageBox.Show($"{end}");
                 //System.Windows.MessageBox.Show($"Start: {Properties.Settings.Default.SavedColors.Substring(0, start)}\nmiddle: {temp}\nend: {Properties.Settings.Default.SavedColors.Substring(end - 1)}");
-                if (start > 0)
-                    Properties.Settings.Default.SavedColors = Properties.Settings.Default.SavedColors.Substring(0, start);
-                Properties.Settings.Default.SavedColors += temp;
-                if(end_index < Custom_Color_List.Count)
-                    Properties.Settings.Default.SavedColors += Properties.Settings.Default.SavedColors.Substring(end - 1);
 
-                System.Windows.MessageBox.Show(Properties.Settings.Default.SavedColors);
+                string temp2 = Properties.Settings.Default.SavedColors.Substring(0, start);
+                //System.Windows.MessageBox.Show($"3: {Properties.Settings.Default.SavedColors}\n\n{temp2}");
+                temp2 += temp;
+                //System.Windows.MessageBox.Show($"4: {temp2}");
+                if (index < Custom_Color_List.Count - 1)
+                    temp2 += Properties.Settings.Default.SavedColors.Substring(end); // start at underscore
+                System.Windows.MessageBox.Show($"5: {temp2}");
+                Properties.Settings.Default.SavedColors = temp2; 
                 Properties.Settings.Default.Save();
             } catch(Exception ex)
             {
-                System.Windows.MessageBox.Show($"Not a number?: {ex.Message}");
+                System.Windows.MessageBox.Show($"{ex.Message}");
             }
             
         }

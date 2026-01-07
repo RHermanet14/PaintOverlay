@@ -26,7 +26,7 @@ namespace PaintOverlay.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_2" +
-            "55_255_255_255")]
+            "55_255_255_255_")]
         public string SavedColors {
             get {
                 return ((string)(this["SavedColors"]));

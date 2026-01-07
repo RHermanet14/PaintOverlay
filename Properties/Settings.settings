@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="SavedColors" Type="System.String" Scope="User">
-      <Value Profile="(Default)">255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255</Value>
+      <Value Profile="(Default)">255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_255_</Value>
     </Setting>
   </Settings>
 </SettingsFile>
