@@ -40,7 +40,6 @@ namespace PaintOverlay
             }
             RInput.Text = GInput.Text = BInput.Text = "255";
             string temp = Properties.Settings.Default.SavedColors;
-            //System.Windows.MessageBox.Show(Properties.Settings.Default.SavedColors);
             int i = 0, index;
             List<string> values = [];
             while ((index = temp.IndexOf('_')) != -1)
@@ -62,8 +61,6 @@ namespace PaintOverlay
 
         private void Color_Selected(object sender, MouseButtonEventArgs e)
         {
-            //Properties.Settings.Default.Reset();
-            //Properties.Settings.Default.Save();
             if (e.Source == null) return;
             if (e.Source is System.Windows.Shapes.Rectangle rect)
             {
@@ -136,24 +133,16 @@ namespace PaintOverlay
                 int start = 0, end = 0;
                 int start_index = index * 3;
                 int end_index = start_index + 3;
-                //System.Windows.MessageBox.Show($"{Custom_Color_List.Count}");
                 for (int i = 0; i < end_index; i++)
                 {
                     if (start_index > i)
                         start = Properties.Settings.Default.SavedColors.IndexOf('_', start) + 1; 
                     end = Properties.Settings.Default.SavedColors.IndexOf('_', end) + 1;
                 }
-                //System.Windows.MessageBox.Show("2");
-                //System.Windows.MessageBox.Show($"{end}");
-                //System.Windows.MessageBox.Show($"Start: {Properties.Settings.Default.SavedColors.Substring(0, start)}\nmiddle: {temp}\nend: {Properties.Settings.Default.SavedColors.Substring(end - 1)}");
-
                 string temp2 = Properties.Settings.Default.SavedColors.Substring(0, start);
-                //System.Windows.MessageBox.Show($"3: {Properties.Settings.Default.SavedColors}\n\n{temp2}");
                 temp2 += temp;
-                //System.Windows.MessageBox.Show($"4: {temp2}");
                 if (index < Custom_Color_List.Count - 1)
-                    temp2 += Properties.Settings.Default.SavedColors.Substring(end); // start at underscore
-                System.Windows.MessageBox.Show($"5: {temp2}");
+                    temp2 += Properties.Settings.Default.SavedColors.Substring(end);
                 Properties.Settings.Default.SavedColors = temp2; 
                 Properties.Settings.Default.Save();
             } catch(Exception ex)
