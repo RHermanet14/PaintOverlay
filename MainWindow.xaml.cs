@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using System.Xml.Linq;
 
 namespace PaintOverlay
@@ -168,8 +169,10 @@ namespace PaintOverlay
             DrawingCanvas.Strokes.Clear();
         }
 
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            DrawingMenu.Visibility = Visibility.Hidden;
+            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Render);
             System.Drawing.Rectangle bounds = Screen.GetBounds(System.Drawing.Point.Empty);
             using Bitmap bitmap = new(bounds.Width, bounds.Height);
             using (Graphics g = Graphics.FromImage(bitmap))
@@ -177,6 +180,7 @@ namespace PaintOverlay
                 g.CopyFromScreen(System.Drawing.Point.Empty, System.Drawing.Point.Empty, bounds.Size);
             }
             System.Windows.Forms.Clipboard.SetImage(bitmap);
+            DrawingMenu.Visibility = Visibility.Visible;
         }
 
         private void HelpButton_Click(object sender, RoutedEventArgs e)
