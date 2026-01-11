@@ -185,7 +185,8 @@ namespace PaintOverlay
 
         private void HelpButton_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.MessageBox.Show("Will open new window where keybinds can be changed\nRight Alt to toggle canvas\n Right control to hide top bar");
+            PreferencesWindow pw = new();
+            pw.Show();
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
