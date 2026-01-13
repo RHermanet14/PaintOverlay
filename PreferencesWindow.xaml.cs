@@ -21,5 +21,15 @@ namespace PaintOverlay
         {
             InitializeComponent();
         }
+
+        private void Restore_Default(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Save_Changes(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
