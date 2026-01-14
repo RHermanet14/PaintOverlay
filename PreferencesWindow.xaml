@@ -19,23 +19,17 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
+            
             <TextBlock Text="Toggle Canvas Visibility" Grid.Row="0" Grid.Column="0"/>
             <TextBlock Text="Toggle Menu Visiblity" Grid.Row="1"/>
 
-            <Button Name="canvas_visibility_bind" Grid.Column="1"/>
-            <Button Name="menu_visibility_bind" Grid.Column="1" Grid.Row="1"/>
+            <Button Name="Canvas_Visibility_Bind" Grid.Column="1" Click="Visibility_Bind_Click"/>
+            <Button Name="Menu_Visibility_Bind" Grid.Column="1" Grid.Row="1" Click="Visibility_Bind_Click"/>
 
-            <Button Name="canvas_visibility_reset" Content="Reset" Grid.Column="2"/>
-            <Button Name="menu_visibility_reset" Content="Reset" Grid.Column="2" Grid.Row="2"/>
+            <Button Name="Canvas_Visibility_Reset" Content="Reset" Grid.Column="2" Click="Visibility_Reset_Click"/>
+            <Button Name="Menu_Visibility_Reset" Content="Reset" Grid.Column="2" Grid.Row="2" Click="Visibility_Reset_Click"/>
 
         </Grid>
-        <Grid Grid.IsSharedSizeScope="True" HorizontalAlignment="Right" x:Name="button_grid">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition SharedSizeGroup="ButtonColumn" />
-                <ColumnDefinition SharedSizeGroup="ButtonColumn" />
-            </Grid.ColumnDefinitions>
-            <Button Content="Save Changes" Grid.Column="0" Margin="5" Click="Save_Changes" />
-            <Button Content="Restore All Defaults" Grid.Column="1" Margin="5" Click="Restore_Default" />
-        </Grid>
+        <Button HorizontalAlignment="Right" Content="Restore All Defaults" Margin="5" Click="Restore_Default" />
     </StackPanel>
 </Window>

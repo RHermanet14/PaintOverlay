@@ -35,5 +35,29 @@ namespace PaintOverlay.Properties {
                 this["SavedColors"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("121")]
+        public int canvas_visibility_bind {
+            get {
+                return ((int)(this["canvas_visibility_bind"]));
+            }
+            set {
+                this["canvas_visibility_bind"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("119")]
+        public int menu_visibility_bind {
+            get {
+                return ((int)(this["menu_visibility_bind"]));
+            }
+            set {
+                this["menu_visibility_bind"] = value;
+            }
+        }
     }
 }
