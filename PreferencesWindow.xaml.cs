@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Runtime.InteropServices;
 
 namespace PaintOverlay
 {
@@ -18,10 +19,23 @@ namespace PaintOverlay
     /// </summary>
     public partial class PreferencesWindow : Window
     {
+        private readonly KeyboardHook hook;
+        private bool ReadyToBind = false;
+        private System.Windows.Controls.Button? SelectedBind = null;
+
+        #region convert scan code to System.Windows.Input.Key object
+        private const uint MAPVK_VSC_TO_VK = 0x01;
+
+        [DllImport("user32.dll")]
+        public static extern uint MapVirtualKey(uint uCode, uint uMapType);
+        #endregion
+
         public PreferencesWindow()
         {
             InitializeComponent();
             Initialize_Bindings();
+            hook = new KeyboardHook();
+            KeyboardHook.KeyboardInput += OnKeyboardInput;
         }
 
         private void Initialize_Bindings()
@@ -32,6 +46,43 @@ namespace PaintOverlay
                 Canvas_Visibility_Reset.IsEnabled = false;
             if (string.Equals(Settings.Default.PropertyValues["menu_visibility_bind"].SerializedValue, Settings.Default.Properties["menu_visibility_bind"].DefaultValue))
                 Menu_Visibility_Reset.IsEnabled = false;       
+        }
+
+        private void OnKeyboardInput(object? sender, KeyboardInputEventArgs k) // KeyboardInputEventArgs k
+        {
+            if (ReadyToBind && SelectedBind != null)
+            {
+                // Cannot be left click (won't be because it only tracks keyboard)
+
+                uint virtualKey = MapVirtualKey(k.Key, MAPVK_VSC_TO_VK);
+                Key key = KeyInterop.KeyFromVirtualKey((int)virtualKey);
+
+                System.Windows.MessageBox.Show($"{key.ToString()}");
+
+                /*
+                switch (SelectedBind.Name)
+                {
+                    case "Canvas_Visibility_Bind":
+                        Properties.Settings.Default.canvas_visibility_bind = k.Key;
+                        break;
+                    case "Menu_Visibility_Bind":
+                        Properties.Settings.Default.menu_visibility_bind = k.Key;
+                        break;
+                    default:
+                        System.Windows.MessageBox.Show("Error: button name not found");
+                        ReadyToBind = false;
+                        SelectedBind = null;
+                        return;
+                }
+                */
+
+                // SelectedBind.Content = key.ToString();
+                ReadyToBind = false;
+                SelectedBind = null;
+                //Properties.Settings.Default.Save();
+
+                // Update UI and functionality in Main Window
+            }
         }
 
         private void Restore_Default(object sender, RoutedEventArgs e)
@@ -53,12 +104,12 @@ namespace PaintOverlay
 
         private void Visibility_Bind_Click(object sender, RoutedEventArgs e)
         {
-            // Possibly will have to create separate functions for each key bind
-
-            // Get next key press from user
-            // Set setting value to input key value
-            // Save settings
-            // Update UI and functionality in Main Window
+            if (sender is System.Windows.Controls.Button button)
+            {
+                ReadyToBind = true;
+                SelectedBind = button;
+            }
+            // key press is handled in keyboard proc
         }
     }
 }

@@ -53,6 +53,8 @@ namespace PaintOverlay
         }
         private void OnKeyboardInput(object? sender, EventArgs e)
         {
+            if (KeyboardHook.GetObjectCount() > 1) // If settings is open
+                return;
             if (Keyboard.IsKeyDown(Key.RightAlt))
             {
                 DrawingCanvas.Visibility = DrawingCanvas.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
