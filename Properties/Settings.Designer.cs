@@ -39,24 +39,24 @@ namespace PaintOverlay.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("121")]
-        public int canvas_visibility_bind {
+        public int Canvas_Visibility_Bind {
             get {
-                return ((int)(this["canvas_visibility_bind"]));
+                return ((int)(this["Canvas_Visibility_Bind"]));
             }
             set {
-                this["canvas_visibility_bind"] = value;
+                this["Canvas_Visibility_Bind"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("119")]
-        public int menu_visibility_bind {
+        public int Menu_Visibility_Bind {
             get {
-                return ((int)(this["menu_visibility_bind"]));
+                return ((int)(this["Menu_Visibility_Bind"]));
             }
             set {
-                this["menu_visibility_bind"] = value;
+                this["Menu_Visibility_Bind"] = value;
             }
         }
     }

@@ -16,8 +16,6 @@ namespace PaintOverlay
     internal class KeyboardHook : IDisposable
     {
         #region variables
-        // Get static count of instances of created objects; if count > 1, block input from handler
-        private static int object_count = 0;
         public static event EventHandler<KeyboardInputEventArgs>? KeyboardInput;
         private const int WH_KEYBOARD_LL = 13;
         private readonly HOOKPROC _keyboardProc;
@@ -42,11 +40,8 @@ namespace PaintOverlay
         }
         #endregion
 
-        public static int GetObjectCount() { return object_count; }
-
         public KeyboardHook()
         {
-            object_count ++;
             _keyboardProc = KeyboardHookCallback;
             _keyboardHookID = SetKeyboardHook(_keyboardProc);
         }
@@ -93,7 +88,6 @@ namespace PaintOverlay
                 UnhookWindowsHookEx(_keyboardHookID);
                 _keyboardHookID = IntPtr.Zero;
             }
-            object_count--;
         }
     }
 }

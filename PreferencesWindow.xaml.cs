@@ -19,64 +19,51 @@ namespace PaintOverlay
     /// </summary>
     public partial class PreferencesWindow : Window
     {
-        private readonly KeyboardHook hook;
         private bool ReadyToBind = false;
         private System.Windows.Controls.Button? SelectedBind = null;
-
-        #region convert scan code to System.Windows.Input.Key object
-        private const uint MAPVK_VSC_TO_VK = 0x01;
-
-        [DllImport("user32.dll")]
-        public static extern uint MapVirtualKey(uint uCode, uint uMapType);
-        #endregion
 
         public PreferencesWindow()
         {
             InitializeComponent();
-            Initialize_Bindings();
-            hook = new KeyboardHook();
-            KeyboardHook.KeyboardInput += OnKeyboardInput;
+            Initialize_Bindings();          
         }
 
         private void Initialize_Bindings()
         {
-            Canvas_Visibility_Bind.Content = ((Key)Properties.Settings.Default.canvas_visibility_bind).ToString();
-            Menu_Visibility_Bind.Content = ((Key)Properties.Settings.Default.menu_visibility_bind).ToString();
-            if (string.Equals(Settings.Default.PropertyValues["canvas_visibility_bind"].SerializedValue, Settings.Default.Properties["canvas_visibility_bind"].DefaultValue))
+            Canvas_Visibility_Bind.Content = ((Key)Properties.Settings.Default.Canvas_Visibility_Bind).ToString();
+            Menu_Visibility_Bind.Content = ((Key)Properties.Settings.Default.Menu_Visibility_Bind).ToString();
+            if (string.Equals(Settings.Default.PropertyValues["Canvas_Visibility_Bind"].SerializedValue, Settings.Default.Properties["Canvas_Visibility_Bind"].DefaultValue))
                 Canvas_Visibility_Reset.IsEnabled = false;
-            if (string.Equals(Settings.Default.PropertyValues["menu_visibility_bind"].SerializedValue, Settings.Default.Properties["menu_visibility_bind"].DefaultValue))
+            if (string.Equals(Settings.Default.PropertyValues["Menu_Visibility_Bind"].SerializedValue, Settings.Default.Properties["Menu_Visibility_Bind"].DefaultValue))
                 Menu_Visibility_Reset.IsEnabled = false;       
         }
 
-        private void OnKeyboardInput(object? sender, KeyboardInputEventArgs k) // KeyboardInputEventArgs k
+        private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (ReadyToBind && SelectedBind != null)
             {
                 // Cannot be left click (won't be because it only tracks keyboard)
-
-                uint virtualKey = MapVirtualKey(k.Key, MAPVK_VSC_TO_VK);
-                Key key = KeyInterop.KeyFromVirtualKey((int)virtualKey);
-
-                System.Windows.MessageBox.Show($"{key.ToString()}");
-
-                /*
-                switch (SelectedBind.Name)
+                try
                 {
-                    case "Canvas_Visibility_Bind":
-                        Properties.Settings.Default.canvas_visibility_bind = k.Key;
-                        break;
-                    case "Menu_Visibility_Bind":
-                        Properties.Settings.Default.menu_visibility_bind = k.Key;
-                        break;
-                    default:
-                        System.Windows.MessageBox.Show("Error: button name not found");
-                        ReadyToBind = false;
-                        SelectedBind = null;
-                        return;
+                    if (string.Equals(e.Key.ToString(), "System"))
+                    {
+                        System.Windows.MessageBox.Show($"{(int)e.SystemKey}");
+                        //Properties.Settings.Default[SelectedBind.Name] = (int)e.SystemKey;
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show($"{(int)e.Key}");
+                        //Properties.Settings.Default[SelectedBind.Name] = (int)e.Key;
+                    }
+                } catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show($"Error: no setting with name {SelectedBind.Name} found. {ex.Message}");
                 }
-                */
 
-                // SelectedBind.Content = key.ToString();
+
+
+                //System.Windows.MessageBox.Show($"{e.Key}\n {e.Key.ToString()}\n{Properties.Settings.Default[SelectedBind.Name]}\n{(int)e.SystemKey}");
+
                 ReadyToBind = false;
                 SelectedBind = null;
                 //Properties.Settings.Default.Save();
