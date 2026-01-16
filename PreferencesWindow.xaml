@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PaintOverlay"
         mc:Ignorable="d"
-        Title="PreferencesWindow" Height="450" Width="800">
+        Title="PreferencesWindow" Height="450" Width="800"
+        KeyDown="Window_KeyDown">
     <StackPanel Margin="10,0,10,0">
         <Label x:Name="preferences_label" Content="Key Bindings" FontSize="24" />
         <Separator Background="Gray" Height="2"/>
