@@ -1,6 +1,8 @@
 ﻿using PaintOverlay.Properties;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,20 +20,58 @@ namespace PaintOverlay
     /// </summary>
     public partial class PreferencesWindow : Window
     {
+        private bool ReadyToBind = false;
+        private System.Windows.Controls.Button? SelectedBind = null;
         public PreferencesWindow()
         {
             InitializeComponent();
-            Initialize_Bindings();
+            Initialize_Bindings();          
         }
 
         private void Initialize_Bindings()
         {
-            Canvas_Visibility_Bind.Content = ((Key)Properties.Settings.Default.canvas_visibility_bind).ToString();
-            Menu_Visibility_Bind.Content = ((Key)Properties.Settings.Default.menu_visibility_bind).ToString();
-            if (string.Equals(Settings.Default.PropertyValues["canvas_visibility_bind"].SerializedValue, Settings.Default.Properties["canvas_visibility_bind"].DefaultValue))
+            Canvas_Visibility_Bind.Content = ((Key)Properties.Settings.Default.Canvas_Visibility_Bind).ToString();
+            Menu_Visibility_Bind.Content = ((Key)Properties.Settings.Default.Menu_Visibility_Bind).ToString();
+            if (string.Equals(Settings.Default.PropertyValues["Canvas_Visibility_Bind"].SerializedValue, Settings.Default.Properties["Canvas_Visibility_Bind"].DefaultValue))
                 Canvas_Visibility_Reset.IsEnabled = false;
-            if (string.Equals(Settings.Default.PropertyValues["menu_visibility_bind"].SerializedValue, Settings.Default.Properties["menu_visibility_bind"].DefaultValue))
+            if (string.Equals(Settings.Default.PropertyValues["Menu_Visibility_Bind"].SerializedValue, Settings.Default.Properties["Menu_Visibility_Bind"].DefaultValue))
                 Menu_Visibility_Reset.IsEnabled = false;       
+        }
+
+        private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (ReadyToBind && SelectedBind != null)
+            {
+                Key key;
+                if (string.Equals(e.Key.ToString(), "System"))
+                    key = e.SystemKey;
+                else
+                    key = e.Key;
+                try
+                {
+                    Properties.Settings.Default[SelectedBind.Name] = (int)key;
+                    SelectedBind.Content = key.ToString();
+                    int row = Grid.GetRow(SelectedBind);
+                    foreach (UIElement element in preferences_grid.Children)
+                    {
+                        if (Grid.GetRow(element) == row && Grid.GetColumn(element) == 2)
+                        {
+                            if (element is System.Windows.Controls.Button reset)
+                            {
+                                reset.IsEnabled = true;
+                            }
+                        }
+                    }
+                } catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show($"Error: no setting with name {SelectedBind.Name} found. {ex.Message}");
+                }
+                ReadyToBind = false;
+                SelectedBind = null;
+                Properties.Settings.Default.Save();
+                
+                // Update UI and functionality in Main Window
+            }
         }
 
         private void Restore_Default(object sender, RoutedEventArgs e)
@@ -53,12 +93,12 @@ namespace PaintOverlay
 
         private void Visibility_Bind_Click(object sender, RoutedEventArgs e)
         {
-            // Possibly will have to create separate functions for each key bind
-
-            // Get next key press from user
-            // Set setting value to input key value
-            // Save settings
-            // Update UI and functionality in Main Window
+            if (sender is System.Windows.Controls.Button button)
+            {
+                ReadyToBind = true;
+                SelectedBind = button;
+            }
+            // key press is handled in Window_KeyDown
         }
     }
 }
