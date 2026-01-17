@@ -31,8 +31,8 @@ namespace PaintOverlay
 
         private void Initialize_Bindings()
         {
-            Canvas_Visibility_Bind.Content = ((Key)Properties.Settings.Default.canvas_visibility_bind).ToString();
-            Menu_Visibility_Bind.Content = ((Key)Properties.Settings.Default.menu_visibility_bind).ToString();
+            Canvas_Visibility_Bind.Content = ((Key)Properties.Settings.Default.Canvas_Visibility_Bind).ToString();
+            Menu_Visibility_Bind.Content = ((Key)Properties.Settings.Default.Menu_Visibility_Bind).ToString();
             if (string.Equals(Settings.Default.PropertyValues["canvas_visibility_bind"].SerializedValue, Settings.Default.Properties["canvas_visibility_bind"].DefaultValue))
                 Canvas_Visibility_Reset.IsEnabled = false;
             if (string.Equals(Settings.Default.PropertyValues["menu_visibility_bind"].SerializedValue, Settings.Default.Properties["menu_visibility_bind"].DefaultValue))
