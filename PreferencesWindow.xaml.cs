@@ -33,9 +33,9 @@ namespace PaintOverlay
         {
             Canvas_Visibility_Bind.Content = ((Key)Properties.Settings.Default.Canvas_Visibility_Bind).ToString();
             Menu_Visibility_Bind.Content = ((Key)Properties.Settings.Default.Menu_Visibility_Bind).ToString();
-            if (string.Equals(Settings.Default.PropertyValues["canvas_visibility_bind"].SerializedValue, Settings.Default.Properties["canvas_visibility_bind"].DefaultValue))
+            if (string.Equals(Settings.Default.PropertyValues["Canvas_Visibility_Bind"].SerializedValue, Settings.Default.Properties["Canvas_Visibility_Bind"].DefaultValue))
                 Canvas_Visibility_Reset.IsEnabled = false;
-            if (string.Equals(Settings.Default.PropertyValues["menu_visibility_bind"].SerializedValue, Settings.Default.Properties["menu_visibility_bind"].DefaultValue))
+            if (string.Equals(Settings.Default.PropertyValues["Menu_Visibility_Bind"].SerializedValue, Settings.Default.Properties["Menu_Visibility_Bind"].DefaultValue))
                 Menu_Visibility_Reset.IsEnabled = false;       
         }
 
@@ -60,6 +60,7 @@ namespace PaintOverlay
                             if (element is System.Windows.Controls.Button reset)
                             {
                                 reset.IsEnabled = true;
+                                break;
                             }
                         }
                     }
@@ -72,12 +73,13 @@ namespace PaintOverlay
                 Properties.Settings.Default.Save();
                 
                 // Update UI and functionality in Main Window
+                // While settings is open, deny binds from working.
             }
         }
 
         private void Restore_Default(object sender, RoutedEventArgs e)
         {
-
+            
         }
 
         private void Save_Changes(object sender, RoutedEventArgs e)
@@ -87,9 +89,36 @@ namespace PaintOverlay
 
         private void Visibility_Reset_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.MessageBox.Show("HI");
-            // Settings.Default.PropertyValues["MyPropertyName"].SerializedValue = Settings.Default.Properties["MyPropertyName"].DefaultValue;
-            // Settings.Default.PropertyValues["MyPropertyName"].Deserialized = false;
+            if (sender is System.Windows.Controls.Button reset_button)
+            {
+                
+                int row = Grid.GetRow(reset_button);
+                foreach (UIElement element in preferences_grid.Children)
+                {
+                    if (Grid.GetRow(element) == row && Grid.GetColumn(element) == 1 && element is System.Windows.Controls.Button bind_button)
+                    {
+                        try
+                        {
+                            if(int.TryParse(Settings.Default.Properties[bind_button.Name].DefaultValue.ToString(), out int default_bind))
+                            {
+                                Properties.Settings.Default[bind_button.Name] = default_bind;
+                                Properties.Settings.Default.Save();
+                                reset_button.IsEnabled = false;
+                                bind_button.Content = (Key)default_bind;
+                                // Update UI and functionality in Main Window
+                                break;
+                            } else
+                            {
+                                throw new Exception($"Error: unable to convert {bind_button.Name} default value from string to int.");
+                            }
+                            
+                        } catch(Exception ex)
+                        {
+                            System.Windows.MessageBox.Show($"{ex.Message}");
+                        }
+                    }
+                }
+            }
         }
 
         private void Visibility_Bind_Click(object sender, RoutedEventArgs e)
