@@ -23,7 +23,7 @@ namespace PaintOverlay
         private bool ReadyToBind = false;
         private System.Windows.Controls.Button? SelectedBind = null;
 
-        public PreferencesWindow()
+        public PreferencesWindow(MainWindow main)
         {
             InitializeComponent();
             Initialize_Bindings();
@@ -33,11 +33,13 @@ namespace PaintOverlay
         {
             Canvas_Visibility_Bind.Content = ((Key)Properties.Settings.Default.Canvas_Visibility_Bind).ToString();
             Menu_Visibility_Bind.Content = ((Key)Properties.Settings.Default.Menu_Visibility_Bind).ToString();
-            if (string.Equals(Settings.Default.PropertyValues["Canvas_Visibility_Bind"].SerializedValue, Settings.Default.Properties["Canvas_Visibility_Bind"].DefaultValue))
+            if (Is_Setting_Default("Canvas_Visibility_bind"))
                 Canvas_Visibility_Reset.IsEnabled = false;
-            if (string.Equals(Settings.Default.PropertyValues["Menu_Visibility_Bind"].SerializedValue, Settings.Default.Properties["Menu_Visibility_Bind"].DefaultValue))
+            if (Is_Setting_Default("Menu_Visibility_bind"))
                 Menu_Visibility_Reset.IsEnabled = false;       
         }
+
+        private static bool Is_Setting_Default(string setting) { return string.Equals(Settings.Default.PropertyValues[setting].SerializedValue, Settings.Default.Properties[setting].DefaultValue); }
 
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -59,7 +61,7 @@ namespace PaintOverlay
                         {
                             if (element is System.Windows.Controls.Button reset)
                             {
-                                reset.IsEnabled = true;
+                                reset.IsEnabled = !Is_Setting_Default(SelectedBind.Name);
                                 break;
                             }
                         }
@@ -72,8 +74,7 @@ namespace PaintOverlay
                 SelectedBind = null;
                 Properties.Settings.Default.Save();
                 
-                // Update UI and functionality in Main Window
-                // While settings is open, deny binds from working.
+                // Functionality gets auto updated because it reads binds from settings
             }
         }
 
@@ -105,7 +106,7 @@ namespace PaintOverlay
                                 Properties.Settings.Default.Save();
                                 reset_button.IsEnabled = false;
                                 bind_button.Content = (Key)default_bind;
-                                // Update UI and functionality in Main Window
+                                // Functionality gets auto updated because it reads binds from settings
                                 break;
                             } else
                             {

@@ -51,14 +51,15 @@ namespace PaintOverlay
             hook = new KeyboardHook();
             KeyboardHook.KeyboardInput += OnKeyboardInput;
         }
+
         private void OnKeyboardInput(object? sender, EventArgs e)
         {
-            if (Keyboard.IsKeyDown(Key.RightAlt))
+            if (Keyboard.IsKeyDown((Key)Properties.Settings.Default.Canvas_Visibility_Bind))
             {
                 DrawingCanvas.Visibility = DrawingCanvas.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
                 this.Activate();
             }
-            if (Keyboard.IsKeyDown(Key.RightCtrl) && PaintWindow.IsActive)
+            if (Keyboard.IsKeyDown((Key)Properties.Settings.Default.Menu_Visibility_Bind) && PaintWindow.IsActive)
             {
                 DrawingMenu.Visibility = DrawingMenu.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
             }
@@ -185,7 +186,7 @@ namespace PaintOverlay
 
         private void HelpButton_Click(object sender, RoutedEventArgs e)
         {
-            PreferencesWindow pw = new();
+            PreferencesWindow pw = new(this);
             pw.Show();
         }
 
