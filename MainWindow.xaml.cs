@@ -25,6 +25,8 @@ namespace PaintOverlay
     {
         private readonly KeyboardHook hook;
         private enum BrushTypes {Pen, Highlighter, Eraser};
+        public bool CanDraw { get; set; } = true;
+
         #region Brush Types
         private readonly DrawingAttributes PenAttributes = new()
         {
@@ -54,6 +56,7 @@ namespace PaintOverlay
 
         private void OnKeyboardInput(object? sender, EventArgs e)
         {
+            if (!CanDraw) return;
             if (Keyboard.IsKeyDown((Key)Properties.Settings.Default.Canvas_Visibility_Bind))
             {
                 DrawingCanvas.Visibility = DrawingCanvas.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
@@ -187,6 +190,7 @@ namespace PaintOverlay
         private void HelpButton_Click(object sender, RoutedEventArgs e)
         {
             PreferencesWindow pw = new(this);
+            CanDraw = false;
             pw.Show();
         }
 
