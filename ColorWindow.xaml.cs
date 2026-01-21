@@ -148,8 +148,7 @@ namespace PaintOverlay
             } catch(Exception ex)
             {
                 System.Windows.MessageBox.Show($"{ex.Message}");
-            }
-            
+            }       
         }
     }
 }

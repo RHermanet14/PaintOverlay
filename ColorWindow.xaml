@@ -25,7 +25,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Rectangle x:Name="White" Stroke="Black" MouseLeftButtonDown="Color_Selected"/>
+            <Rectangle x:Name="White" Fill="White" Stroke="Black" MouseLeftButtonDown="Color_Selected"/>
             <Rectangle x:Name="Black" Fill="Black" Grid.Column="1" MouseLeftButtonDown="Color_Selected"/>
             <Rectangle x:Name="Red" Fill="Red" Stroke="Black" Grid.Column="2" MouseLeftButtonDown="Color_Selected"/>
             <Rectangle x:Name="Blue" Fill="Blue" Stroke="Black" Grid.Column="3" MouseLeftButtonDown="Color_Selected"/>

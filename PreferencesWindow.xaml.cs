@@ -89,14 +89,15 @@ namespace PaintOverlay
                 ReadyToBind = false;
                 SelectedBind = null;
                 Properties.Settings.Default.Save();
-                
                 // Functionality gets auto updated because it reads binds from settings
             }
         }
 
         private void Restore_Default(object sender, RoutedEventArgs e)
         {
+            string temp = Properties.Settings.Default.SavedColors; // Don't get rid of saved colors!
             Properties.Settings.Default.Reset();
+            Properties.Settings.Default.SavedColors = temp;
             Properties.Settings.Default.Save();
             Initialize_Bindings();
         }
@@ -105,7 +106,6 @@ namespace PaintOverlay
         {
             if (sender is System.Windows.Controls.Button reset_button)
             {
-                
                 int row = Grid.GetRow(reset_button);
                 foreach (UIElement element in preferences_grid.Children)
                 {

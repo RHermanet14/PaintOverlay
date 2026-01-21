@@ -25,7 +25,7 @@ namespace PaintOverlay
     {
         private readonly KeyboardHook hook;
         private enum BrushTypes {Pen, Highlighter, Eraser};
-        public bool CanDraw { get; set; } = true;
+        public bool CanDraw { get; set; } = true; // Either fix or remove
 
         #region Brush Types
         private readonly DrawingAttributes PenAttributes = new()
@@ -190,7 +190,6 @@ namespace PaintOverlay
         private void HelpButton_Click(object sender, RoutedEventArgs e)
         {
             PreferencesWindow pw = new(this);
-            CanDraw = false;
             pw.Show();
         }
 
