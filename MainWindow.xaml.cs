@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using Microsoft.Windows.Themes;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
@@ -24,8 +25,10 @@ namespace PaintOverlay
     public partial class MainWindow : Window
     {
         private readonly KeyboardHook hook;
-        private enum BrushTypes {Pen, Highlighter, Eraser, Shape};
+        private enum BrushTypes {Pen, Highlighter, Shape, Eraser };
+        private enum ShapeTypes { Ellipse, Rectangle, Triangle }
         public bool CanDraw { get; set; } = true; // Either fix or remove
+        private bool DrawShape = false;
 
         #region Brush Types
         private readonly DrawingAttributes PenAttributes = new()
@@ -43,6 +46,13 @@ namespace PaintOverlay
             IgnorePressure = true,
             IsHighlighter = true,
             StylusTip = StylusTip.Rectangle,
+        };
+
+        private readonly DrawingAttributes ShapeAttributes = new()
+        {
+            Color = Colors.Black,
+            Height = 2,
+            Width = 2,
         };
         #endregion
 
@@ -140,6 +150,7 @@ namespace PaintOverlay
         {
             if (DrawingCanvas == null)
                 return;
+            Shape.IsEnabled = DrawShape = false;
             DrawingAttributes brush_attributes;
             switch((BrushTypes)Brush.SelectedIndex)
             {
@@ -158,13 +169,12 @@ namespace PaintOverlay
                     ColorPreview.Fill = System.Windows.Media.Brushes.White;
                     return;
                 case BrushTypes.Shape:
-                    Shape.IsEnabled = true;
+                    Shape.IsEnabled = DrawShape = true;
                     return;
                 default:
                     brush_attributes = PenAttributes;
                     break;
-            }
-            Shape.IsEnabled = false;
+            }       
             DrawingCanvas.DefaultDrawingAttributes = brush_attributes;
             DrawingCanvas.EditingMode = InkCanvasEditingMode.Ink;
             SizeInput.Text = brush_attributes.Height.ToString();
@@ -200,6 +210,44 @@ namespace PaintOverlay
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Application.Current.Shutdown();
+        }
+
+        private void DrawingCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (DrawShape)
+            {
+                System.Windows.Point cursorPosition = e.GetPosition(DrawingCanvas);
+                switch((ShapeTypes)Shape.SelectedIndex)
+                {
+                    case ShapeTypes.Ellipse:
+                        StylusPointCollection points = [];
+                        int radiusX = 75;
+                        int radiusY = 50;
+
+                        for (int i = 0; i <= 360; i++)
+                        {
+                            double angle = i * Math.PI / 180;
+                            double x = cursorPosition.X + radiusX * Math.Cos(angle);
+                            double y = cursorPosition.Y + radiusY * Math.Sin(angle);
+                            points.Add(new StylusPoint(x, y));
+                        }
+
+                        Stroke stroke = new(points)
+                        {
+                            DrawingAttributes = ShapeAttributes
+                        };
+
+                        DrawingCanvas.Strokes.Add(stroke);
+                        break;
+                    case ShapeTypes.Rectangle:
+                        break;
+                    case ShapeTypes.Triangle:
+                        break;
+                    default:
+                        break;
+                }
+                
+            }
         }
     }
 }

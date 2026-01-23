@@ -24,8 +24,8 @@
             <ComboBox x:Name="Brush" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" SelectedIndex="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" SelectionChanged="Brush_Changed">
                 <ComboBoxItem Content="Pen"/>
                 <ComboBoxItem Content="Highlighter" />
-                <ComboBoxItem Content="Eraser" />
                 <ComboBoxItem Content="Shape"/>
+                <ComboBoxItem Content="Eraser" />
             </ComboBox>
             <TextBlock Text="Shape:" TextAlignment="Center" VerticalAlignment="Center"/>
             <ComboBox x:Name="Shape" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" SelectedIndex="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" IsEnabled="False">
@@ -39,7 +39,7 @@
             <Button x:Name="HelpButton" Content="Help" Click="HelpButton_Click"/>
             <Button x:Name="ExitButton" Content="Exit" Click="ExitButton_Click"/>
         </UniformGrid>
-        <InkCanvas DockPanel.Dock="Top" x:Name="DrawingCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" UseCustomCursor="True" Cursor="Hand">
+        <InkCanvas DockPanel.Dock="Top" x:Name="DrawingCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" UseCustomCursor="True" Cursor="Hand" PreviewMouseLeftButtonDown="DrawingCanvas_MouseLeftButtonDown">
             <InkCanvas.Background>
                 <SolidColorBrush Color="White" Opacity="0.01"/>
             </InkCanvas.Background>
