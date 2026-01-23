@@ -24,7 +24,7 @@ namespace PaintOverlay
     public partial class MainWindow : Window
     {
         private readonly KeyboardHook hook;
-        private enum BrushTypes {Pen, Highlighter, Eraser};
+        private enum BrushTypes {Pen, Highlighter, Eraser, Shape};
         public bool CanDraw { get; set; } = true; // Either fix or remove
 
         #region Brush Types
@@ -157,10 +157,14 @@ namespace PaintOverlay
                         DrawingCanvas.EraserShape = new EllipseStylusShape(5, 5);
                     ColorPreview.Fill = System.Windows.Media.Brushes.White;
                     return;
+                case BrushTypes.Shape:
+                    Shape.IsEnabled = true;
+                    return;
                 default:
                     brush_attributes = PenAttributes;
                     break;
             }
+            Shape.IsEnabled = false;
             DrawingCanvas.DefaultDrawingAttributes = brush_attributes;
             DrawingCanvas.EditingMode = InkCanvasEditingMode.Ink;
             SizeInput.Text = brush_attributes.Height.ToString();

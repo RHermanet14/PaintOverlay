@@ -12,7 +12,7 @@
         Background="Transparent"
         x:Name="PaintWindow">
     <DockPanel>
-        <UniformGrid DockPanel.Dock="Top" Rows="1" Columns="10" Height="50" x:Name="DrawingMenu">
+        <UniformGrid DockPanel.Dock="Top" Rows="1" Columns="12" Height="50" x:Name="DrawingMenu">
             <UniformGrid.Background>
                 <SolidColorBrush Color="Gray" Opacity="0.9"/>
             </UniformGrid.Background>
@@ -25,6 +25,14 @@
                 <ComboBoxItem Content="Pen"/>
                 <ComboBoxItem Content="Highlighter" />
                 <ComboBoxItem Content="Eraser" />
+                <ComboBoxItem Content="Shape"/>
+            </ComboBox>
+            <TextBlock Text="Shape:" TextAlignment="Center" VerticalAlignment="Center"/>
+            <ComboBox x:Name="Shape" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" SelectedIndex="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" IsEnabled="False">
+                <ComboBoxItem Content="Ellipse"/>
+                <ComboBoxItem Content="Rectangle" />
+                <ComboBoxItem Content="Triangle" />
+                <ComboBoxItem Content="Line"/>
             </ComboBox>
             <Button x:Name="ResetButton" Content="Reset" Click="ResetButton_Click"/>
             <Button x:Name="SaveButton" Content="Save" Click="SaveButton_Click"/>
