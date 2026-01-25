@@ -217,29 +217,63 @@ namespace PaintOverlay
             if (DrawShape)
             {
                 System.Windows.Point cursorPosition = e.GetPosition(DrawingCanvas);
-                switch((ShapeTypes)Shape.SelectedIndex)
+                StylusPointCollection points = [];
+                double x, y;
+                Stroke stroke;
+                switch ((ShapeTypes)Shape.SelectedIndex)
                 {
                     case ShapeTypes.Ellipse:
-                        StylusPointCollection points = [];
+                        
                         int radiusX = 75;
                         int radiusY = 50;
 
                         for (int i = 0; i <= 360; i++)
                         {
                             double angle = i * Math.PI / 180;
-                            double x = cursorPosition.X + radiusX * Math.Cos(angle);
-                            double y = cursorPosition.Y + radiusY * Math.Sin(angle);
+                            x = cursorPosition.X + radiusX * Math.Cos(angle);
+                            y = cursorPosition.Y + radiusY * Math.Sin(angle);
                             points.Add(new StylusPoint(x, y));
                         }
 
-                        Stroke stroke = new(points)
+                        stroke = new(points)
                         {
                             DrawingAttributes = ShapeAttributes
                         };
-
                         DrawingCanvas.Strokes.Add(stroke);
                         break;
                     case ShapeTypes.Rectangle:
+                        int length = 100, width = 100;
+                        if (length % 2 == 0)
+                        {
+                            if (width % 2 == 0) // Both even
+                            {
+                                for (int i = 0; i < length; i++)
+                                {
+                                    x = cursorPosition.X - (width / 2) + i;
+                                    y = cursorPosition.Y - (length / 2);
+                                    points.Add(new StylusPoint(x,y)); // Top
+                                    y = cursorPosition.Y + (length / 2);
+                                    points.Add(new StylusPoint(x, y)); // Bottom
+                                }
+                            } else // Length even, width odd
+                            {
+
+                            }
+                        } else
+                        {
+                            if (width % 2 == 0) // Length odd, width even
+                            {
+
+                            } else // Both odd
+                            {
+
+                            }
+                        }
+                        stroke = new(points)
+                        {
+                            DrawingAttributes = ShapeAttributes
+                        };
+                        DrawingCanvas.Strokes.Add(stroke);
                         break;
                     case ShapeTypes.Triangle:
                         break;
