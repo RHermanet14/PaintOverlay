@@ -247,14 +247,25 @@ namespace PaintOverlay
                         {
                             if (width % 2 == 0) // Both even
                             {
-                                for (int i = 0; i < length; i++)
-                                {
-                                    x = cursorPosition.X - (width / 2) + i;
-                                    y = cursorPosition.Y - (length / 2);
-                                    points.Add(new StylusPoint(x,y)); // Top
-                                    y = cursorPosition.Y + (length / 2);
-                                    points.Add(new StylusPoint(x, y)); // Bottom
-                                }
+                                x = cursorPosition.X - (width / 2);
+                                y = cursorPosition.Y - (length / 2);
+                                points.Add(new StylusPoint(x, y)); // Top
+
+                                x = cursorPosition.X + (width / 2);
+                                y = cursorPosition.Y - (length / 2);
+                                points.Add(new StylusPoint(x, y)); // Right
+
+                                x = cursorPosition.X + (width / 2);
+                                y = cursorPosition.Y + (length / 2);
+                                points.Add(new StylusPoint(x, y)); // Bottom
+
+                                x = cursorPosition.X - (width / 2);
+                                y = cursorPosition.Y + (length / 2);
+                                points.Add(new StylusPoint(x, y)); // Left
+
+                                x = cursorPosition.X - (width / 2);
+                                y = cursorPosition.Y - (length / 2);
+                                points.Add(new StylusPoint(x, y)); // Top again
                             } else // Length even, width odd
                             {
 
