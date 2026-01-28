@@ -12,28 +12,40 @@
         Background="Transparent"
         x:Name="PaintWindow">
     <DockPanel>
-        <UniformGrid DockPanel.Dock="Top" Rows="1" Columns="12" Height="50" x:Name="DrawingMenu">
+        <UniformGrid DockPanel.Dock="Top" Rows="1" Columns="10" Height="50" x:Name="DrawingMenu">
             <UniformGrid.Background>
                 <SolidColorBrush Color="Gray" Opacity="0.9"/>
             </UniformGrid.Background>
-            <TextBlock Text="Thickness:" TextAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock Text="Size:" TextAlignment="Center" VerticalAlignment="Center"/>
             <TextBox x:Name="SizeInput" Text="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="30px" MaxLength="4" TextChanged="Size_Changed"/>
-            <TextBlock Text="Color:" TextAlignment="Center" VerticalAlignment="Center"/>
             <Rectangle x:Name="ColorPreview" Width="30" Height="30" Fill="Black" MouseLeftButtonDown="Open_Color_Window"/>
-            <TextBlock Text="Brush:" TextAlignment="Center" VerticalAlignment="Center"/>
             <ComboBox x:Name="Brush" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" SelectedIndex="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" SelectionChanged="Brush_Changed">
                 <ComboBoxItem Content="Pen"/>
                 <ComboBoxItem Content="Highlighter" />
                 <ComboBoxItem Content="Shape"/>
                 <ComboBoxItem Content="Eraser" />
             </ComboBox>
-            <TextBlock Text="Shape:" TextAlignment="Center" VerticalAlignment="Center"/>
             <ComboBox x:Name="Shape" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" SelectedIndex="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" IsEnabled="False">
                 <ComboBoxItem Content="Ellipse"/>
                 <ComboBoxItem Content="Rectangle" />
                 <ComboBoxItem Content="Triangle" />
                 <ComboBoxItem Content="Line"/>
             </ComboBox>
+            <Grid x:Name="ShapeSettings" IsEnabled="False">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Filled:" TextAlignment="Center" VerticalAlignment="Center"/>
+                <CheckBox x:Name="IsShapeFilled" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBlock Text="Rotation:" TextAlignment="Center" VerticalAlignment="Center" Grid.Row="1"/>
+                <TextBox Grid.Row="1" Grid.Column="1"/>
+            </Grid>
+            
             <Button x:Name="ResetButton" Content="Reset" Click="ResetButton_Click"/>
             <Button x:Name="SaveButton" Content="Save" Click="SaveButton_Click"/>
             <Button x:Name="HelpButton" Content="Help" Click="HelpButton_Click"/>

@@ -50,7 +50,7 @@ namespace PaintOverlay
 
         private readonly DrawingAttributes ShapeAttributes = new()
         {
-            Color = Colors.Black,
+            Color = Colors.Black, // Make clear
             Height = 2,
             Width = 2,
         };
@@ -108,6 +108,10 @@ namespace PaintOverlay
                         HighlighterAttributes.Height = size;
                         HighlighterAttributes.Width = size / 5 > 0 ? size / 5 : 1;
                         break;
+                    case BrushTypes.Shape:
+                        ShapeAttributes.Height = size; // Squares and Circles for now before can modify length and width
+                        ShapeAttributes.Width = size;
+                        break;
                     case BrushTypes.Eraser:
                         DrawingCanvas.EraserShape = new RectangleStylusShape(size, size);
                         break;
@@ -137,6 +141,8 @@ namespace PaintOverlay
                 case BrushTypes.Highlighter:
                     HighlighterAttributes.Color = color;
                     break;
+                case BrushTypes.Shape:
+                    return; // Do nothing for now, want to keep track of color of rectangle without drawing dot in middle (two separate attributes for shape?)
                 case BrushTypes.Eraser:
                     return;
                 default:
