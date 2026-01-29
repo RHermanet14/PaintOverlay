@@ -12,12 +12,29 @@
         Background="Transparent"
         x:Name="PaintWindow">
     <DockPanel>
-        <UniformGrid DockPanel.Dock="Top" Rows="1" Columns="10" Height="50" x:Name="DrawingMenu">
+        <UniformGrid DockPanel.Dock="Top" Rows="1" Columns="9" Height="75" x:Name="DrawingMenu">
             <UniformGrid.Background>
                 <SolidColorBrush Color="Gray" Opacity="0.9"/>
             </UniformGrid.Background>
-            <TextBlock Text="Size:" TextAlignment="Center" VerticalAlignment="Center"/>
-            <TextBox x:Name="SizeInput" Text="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="30px" MaxLength="4" TextChanged="Size_Changed"/>
+            <Grid Margin="0,5,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Length:" TextAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock Text="Width:" TextAlignment="Center" VerticalAlignment="Center" Grid.Row="1"/>
+                <TextBlock Text="Sync:" TextAlignment="Center" VerticalAlignment="Center" Grid.Row="2" ToolTip="Length and Width will both change if one value is changed. If they are different values when Sync is activated, Width will change."/>
+
+                <TextBox x:Name="LengthInput" Text="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="30px" MaxLength="4" TextChanged="Size_Changed" Grid.Column="1"/>
+                <TextBox x:Name="WidthInput" Text="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="30px" MaxLength="4" TextChanged="Size_Changed" Grid.Row="1" Grid.Column="1"/>
+                <CheckBox x:Name="IsSync" IsChecked="True" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="1"/>
+            </Grid>
+
             <Rectangle x:Name="ColorPreview" Width="30" Height="30" Fill="Black" MouseLeftButtonDown="Open_Color_Window"/>
             <ComboBox x:Name="Brush" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" SelectedIndex="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" SelectionChanged="Brush_Changed">
                 <ComboBoxItem Content="Pen"/>
@@ -31,7 +48,7 @@
                 <ComboBoxItem Content="Triangle" />
                 <ComboBoxItem Content="Line"/>
             </ComboBox>
-            <Grid x:Name="ShapeSettings" IsEnabled="False">
+            <Grid x:Name="ShapeSettings" IsEnabled="False" Margin="0,5,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>

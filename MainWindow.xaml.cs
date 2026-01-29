@@ -91,33 +91,53 @@ namespace PaintOverlay
         private void Size_Changed(object sender, TextChangedEventArgs e)
         {
             if (Brush == null) return;
-            if (int.TryParse(SizeInput.Text, out int size))
+            if (int.TryParse(LengthInput.Text, out int length) && int.TryParse(WidthInput.Text, out int width))
             {
-                if (size > 100)
-                    size = 100;
-                else if (size < 1)
-                    size = 1;
-                SizeInput.Text = size.ToString();
+                if (length > 100)
+                    length = 100;
+                else if (length < 1)
+                    length = 1;
+
+                if (width > 100)
+                    width = 100;
+                else if (width < 1)
+                    width = 1;
+                if (IsSync.IsChecked == true)
+                {
+                    // Get which dimension was changed
+                    if(sender is System.Windows.Controls.TextBox input)
+                    {
+                        if (input.Name.Equals("WidthInput"))
+                        {
+                            length = width;
+                        } else
+                        {
+                            width = length;
+                        }
+                    }
+                }
+                LengthInput.Text = length.ToString();
+                WidthInput.Text = width.ToString();
                 switch((BrushTypes)Brush.SelectedIndex)
                 {
                     case BrushTypes.Pen:
-                        PenAttributes.Height = size;
-                        PenAttributes.Width = size;
+                        PenAttributes.Height = length;
+                        PenAttributes.Width = width;
                         break;
                     case BrushTypes.Highlighter:
-                        HighlighterAttributes.Height = size;
-                        HighlighterAttributes.Width = size / 5 > 0 ? size / 5 : 1;
+                        HighlighterAttributes.Height = length;
+                        HighlighterAttributes.Width = width / 5 > 0 ? width / 5 : 1;
                         break;
                     case BrushTypes.Shape:
-                        ShapeAttributes.Height = size; // Squares and Circles for now before can modify length and width
-                        ShapeAttributes.Width = size;
+                        ShapeAttributes.Height = length;
+                        ShapeAttributes.Width = width;
                         break;
                     case BrushTypes.Eraser:
-                        DrawingCanvas.EraserShape = new RectangleStylusShape(size, size);
+                        DrawingCanvas.EraserShape = new RectangleStylusShape(length, width);
                         break;
                     default:
-                        PenAttributes.Height = size;
-                        PenAttributes.Width = size;
+                        PenAttributes.Height = length;
+                        PenAttributes.Width = width;
                         break;
                 }
             }
@@ -168,8 +188,8 @@ namespace PaintOverlay
                     break;
                 case BrushTypes.Eraser:
                     DrawingCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
-                    if (int.TryParse(SizeInput.Text, out int size))
-                        DrawingCanvas.EraserShape = new EllipseStylusShape(size,size);
+                    if (int.TryParse(LengthInput.Text, out int length) && int.TryParse(WidthInput.Text, out int width))
+                        DrawingCanvas.EraserShape = new EllipseStylusShape(length,width);
                     else
                         DrawingCanvas.EraserShape = new EllipseStylusShape(5, 5);
                     ColorPreview.Fill = System.Windows.Media.Brushes.White;
@@ -183,7 +203,8 @@ namespace PaintOverlay
             }       
             DrawingCanvas.DefaultDrawingAttributes = brush_attributes;
             DrawingCanvas.EditingMode = InkCanvasEditingMode.Ink;
-            SizeInput.Text = brush_attributes.Height.ToString();
+            LengthInput.Text = brush_attributes.Height.ToString();
+            WidthInput.Text = brush_attributes.Width.ToString();
             SolidColorBrush preview_color = new(brush_attributes.Color);
             ColorPreview.Fill = preview_color;
         }
@@ -226,7 +247,7 @@ namespace PaintOverlay
                 StylusPointCollection points = [];
                 double x, y;
                 Stroke stroke;
-                int length = 100, width = 100;
+                int length = 100, width = 100; // Either scale up dimension inputs here or increase max possible size
                 switch ((ShapeTypes)Shape.SelectedIndex)
                 {
                     case ShapeTypes.Ellipse:
