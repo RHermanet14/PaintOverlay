@@ -32,7 +32,7 @@
 
                 <TextBox x:Name="LengthInput" Text="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="30px" MaxLength="4" TextChanged="Size_Changed" Grid.Column="1"/>
                 <TextBox x:Name="WidthInput" Text="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="30px" MaxLength="4" TextChanged="Size_Changed" Grid.Row="1" Grid.Column="1"/>
-                <CheckBox x:Name="IsSync" IsChecked="True" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="1"/>
+                <CheckBox x:Name="IsSync" IsChecked="False" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="1"/>
             </Grid>
 
             <Rectangle x:Name="ColorPreview" Width="30" Height="30" Fill="Black" MouseLeftButtonDown="Open_Color_Window"/>

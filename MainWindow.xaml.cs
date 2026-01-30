@@ -29,6 +29,7 @@ namespace PaintOverlay
         private enum ShapeTypes { Ellipse, Rectangle, Triangle }
         public bool CanDraw { get; set; } = true; // Either fix or remove
         private bool DrawShape = false;
+        private int ShapeHeight = 100, ShapeWidth = 100;
 
         #region Brush Types
         private readonly DrawingAttributes PenAttributes = new()
@@ -48,9 +49,16 @@ namespace PaintOverlay
             StylusTip = StylusTip.Rectangle,
         };
 
-        private readonly DrawingAttributes ShapeAttributes = new()
+        private readonly DrawingAttributes ShapeAttributes = new() // Make sure just the shape is drawn, not any pen
         {
-            Color = Colors.Black, // Make clear
+            Color = Colors.Black,
+            Height = 2,
+            Width = 2,
+        };
+
+        private readonly DrawingAttributes EraserAttributes = new() // Just to independently control the height and width of the eraser
+        {
+            Color = Colors.White,
             Height = 2,
             Width = 2,
         };
@@ -126,11 +134,11 @@ namespace PaintOverlay
                         break;
                     case BrushTypes.Highlighter:
                         HighlighterAttributes.Height = length;
-                        HighlighterAttributes.Width = width / 5 > 0 ? width / 5 : 1;
+                        HighlighterAttributes.Width = width;
                         break;
                     case BrushTypes.Shape:
-                        ShapeAttributes.Height = length;
-                        ShapeAttributes.Width = width;
+                        ShapeHeight = length;
+                        ShapeWidth = width;
                         break;
                     case BrushTypes.Eraser:
                         DrawingCanvas.EraserShape = new RectangleStylusShape(length, width);
@@ -164,7 +172,7 @@ namespace PaintOverlay
                 case BrushTypes.Shape:
                     return; // Do nothing for now, want to keep track of color of rectangle without drawing dot in middle (two separate attributes for shape?)
                 case BrushTypes.Eraser:
-                    return;
+                    return; // Do nothing
                 default:
                     PenAttributes.Color = color;
                     break;
@@ -188,23 +196,28 @@ namespace PaintOverlay
                     break;
                 case BrushTypes.Eraser:
                     DrawingCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
-                    if (int.TryParse(LengthInput.Text, out int length) && int.TryParse(WidthInput.Text, out int width))
-                        DrawingCanvas.EraserShape = new EllipseStylusShape(length,width);
-                    else
-                        DrawingCanvas.EraserShape = new EllipseStylusShape(5, 5);
+                    DrawingCanvas.EraserShape = new EllipseStylusShape(EraserAttributes.Height, EraserAttributes.Width);
                     ColorPreview.Fill = System.Windows.Media.Brushes.White;
                     return;
                 case BrushTypes.Shape:
+                    brush_attributes = ShapeAttributes;
                     Shape.IsEnabled = DrawShape = true;
-                    return;
+                    break;
                 default:
                     brush_attributes = PenAttributes;
                     break;
             }       
             DrawingCanvas.DefaultDrawingAttributes = brush_attributes;
             DrawingCanvas.EditingMode = InkCanvasEditingMode.Ink;
-            LengthInput.Text = brush_attributes.Height.ToString();
-            WidthInput.Text = brush_attributes.Width.ToString();
+            if((BrushTypes)Brush.SelectedIndex == BrushTypes.Shape)
+            {
+                LengthInput.Text = ShapeHeight.ToString();
+                WidthInput.Text = ShapeWidth.ToString();
+            } else
+            {
+                LengthInput.Text = brush_attributes.Height.ToString();
+                WidthInput.Text = brush_attributes.Width.ToString();
+            }
             SolidColorBrush preview_color = new(brush_attributes.Color);
             ColorPreview.Fill = preview_color;
         }
@@ -239,7 +252,7 @@ namespace PaintOverlay
             System.Windows.Application.Current.Shutdown();
         }
 
-        private void DrawingCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private async void DrawingCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (DrawShape)
             {
@@ -247,7 +260,6 @@ namespace PaintOverlay
                 StylusPointCollection points = [];
                 double x, y;
                 Stroke stroke;
-                int length = 100, width = 100; // Either scale up dimension inputs here or increase max possible size
                 switch ((ShapeTypes)Shape.SelectedIndex)
                 {
                     case ShapeTypes.Ellipse:
@@ -270,24 +282,24 @@ namespace PaintOverlay
                         DrawingCanvas.Strokes.Add(stroke);
                         break;
                     case ShapeTypes.Rectangle:
-                        x = cursorPosition.X - (width / 2);
-                        y = cursorPosition.Y - (length / 2);
+                        x = cursorPosition.X - (ShapeWidth / 2);
+                        y = cursorPosition.Y - (ShapeHeight / 2);
                         points.Add(new StylusPoint(x, y)); // Top
 
-                        x = cursorPosition.X + (width / 2);
-                        y = cursorPosition.Y - (length / 2);
+                        x = cursorPosition.X + (ShapeWidth / 2);
+                        y = cursorPosition.Y - (ShapeHeight / 2);
                         points.Add(new StylusPoint(x, y)); // Right
 
-                        x = cursorPosition.X + (width / 2);
-                        y = cursorPosition.Y + (length / 2);
+                        x = cursorPosition.X + (ShapeWidth / 2);
+                        y = cursorPosition.Y + (ShapeHeight / 2);
                         points.Add(new StylusPoint(x, y)); // Bottom
 
-                        x = cursorPosition.X - (width / 2);
-                        y = cursorPosition.Y + (length / 2);
+                        x = cursorPosition.X - (ShapeWidth / 2);
+                        y = cursorPosition.Y + (ShapeHeight / 2);
                         points.Add(new StylusPoint(x, y)); // Left
 
-                        x = cursorPosition.X - (width / 2);
-                        y = cursorPosition.Y - (length / 2);
+                        x = cursorPosition.X - (ShapeWidth / 2);
+                        y = cursorPosition.Y - (ShapeHeight / 2);
                         points.Add(new StylusPoint(x, y)); // Top again
                         stroke = new(points)
                         {
@@ -297,19 +309,19 @@ namespace PaintOverlay
                         break;
                     case ShapeTypes.Triangle:
                         x = cursorPosition.X;
-                        y = cursorPosition.Y - (length / 2);
+                        y = cursorPosition.Y - (ShapeHeight / 2);
                         points.Add(new StylusPoint(x, y)); // Top
 
-                        x = cursorPosition.X + (width / 2);
-                        y = cursorPosition.Y + (length / 2);
+                        x = cursorPosition.X + (ShapeWidth / 2);
+                        y = cursorPosition.Y + (ShapeHeight / 2);
                         points.Add(new StylusPoint(x, y)); // Right
 
-                        x = cursorPosition.X - (width / 2);
-                        y = cursorPosition.Y + (length / 2);
+                        x = cursorPosition.X - (ShapeWidth / 2);
+                        y = cursorPosition.Y + (ShapeHeight / 2);
                         points.Add(new StylusPoint(x, y)); // Left
 
                         x = cursorPosition.X;
-                        y = cursorPosition.Y - (length / 2);
+                        y = cursorPosition.Y - (ShapeHeight / 2);
                         points.Add(new StylusPoint(x, y)); // Top
                         stroke = new(points)
                         {
@@ -320,7 +332,6 @@ namespace PaintOverlay
                     default:
                         break;
                 }
-                
             }
         }
     }
