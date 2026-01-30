@@ -30,6 +30,7 @@ namespace PaintOverlay
         public bool CanDraw { get; set; } = true; // Either fix or remove
         private bool DrawShape = false;
         private int ShapeHeight = 100, ShapeWidth = 100;
+        private bool ChangingBrush = false;
 
         #region Brush Types
         private readonly DrawingAttributes PenAttributes = new()
@@ -59,8 +60,8 @@ namespace PaintOverlay
         private readonly DrawingAttributes EraserAttributes = new() // Just to independently control the height and width of the eraser
         {
             Color = Colors.White,
-            Height = 2,
-            Width = 2,
+            Height = 10,
+            Width = 10,
         };
         #endregion
 
@@ -98,7 +99,7 @@ namespace PaintOverlay
 
         private void Size_Changed(object sender, TextChangedEventArgs e)
         {
-            if (Brush == null) return;
+            if (Brush == null || ChangingBrush) return;
             if (int.TryParse(LengthInput.Text, out int length) && int.TryParse(WidthInput.Text, out int width))
             {
                 if (length > 100)
@@ -184,42 +185,49 @@ namespace PaintOverlay
         {
             if (DrawingCanvas == null)
                 return;
+            ChangingBrush = true; // Prevent Size_Changed from running when text box values are changed
             Shape.IsEnabled = DrawShape = false;
-            DrawingAttributes brush_attributes;
             switch((BrushTypes)Brush.SelectedIndex)
             {
                 case BrushTypes.Pen:
-                    brush_attributes = PenAttributes;
+                    DrawingCanvas.DefaultDrawingAttributes = PenAttributes;
                     break;
                 case BrushTypes.Highlighter:
-                    brush_attributes = HighlighterAttributes;
+                    DrawingCanvas.DefaultDrawingAttributes = HighlighterAttributes;
                     break;
                 case BrushTypes.Eraser:
-                    DrawingCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
-                    DrawingCanvas.EraserShape = new EllipseStylusShape(EraserAttributes.Height, EraserAttributes.Width);
-                    ColorPreview.Fill = System.Windows.Media.Brushes.White;
-                    return;
+                    DrawingCanvas.DefaultDrawingAttributes = EraserAttributes;
+                    break;
                 case BrushTypes.Shape:
-                    brush_attributes = ShapeAttributes;
+                    DrawingCanvas.DefaultDrawingAttributes = ShapeAttributes;
                     Shape.IsEnabled = DrawShape = true;
                     break;
                 default:
-                    brush_attributes = PenAttributes;
+                    DrawingCanvas.DefaultDrawingAttributes = PenAttributes;
                     break;
-            }       
-            DrawingCanvas.DefaultDrawingAttributes = brush_attributes;
+            }
             DrawingCanvas.EditingMode = InkCanvasEditingMode.Ink;
-            if((BrushTypes)Brush.SelectedIndex == BrushTypes.Shape)
+            if ((BrushTypes)Brush.SelectedIndex == BrushTypes.Shape)
             {
                 LengthInput.Text = ShapeHeight.ToString();
                 WidthInput.Text = ShapeWidth.ToString();
             } else
             {
-                LengthInput.Text = brush_attributes.Height.ToString();
-                WidthInput.Text = brush_attributes.Width.ToString();
+                LengthInput.Text = DrawingCanvas.DefaultDrawingAttributes.Height.ToString();
+                WidthInput.Text = DrawingCanvas.DefaultDrawingAttributes.Width.ToString();
+
             }
-            SolidColorBrush preview_color = new(brush_attributes.Color);
-            ColorPreview.Fill = preview_color;
+            ChangingBrush = false;
+            if ((BrushTypes)Brush.SelectedIndex == BrushTypes.Eraser)
+            {
+                DrawingCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
+                DrawingCanvas.EraserShape = new EllipseStylusShape(DrawingCanvas.DefaultDrawingAttributes.Height, DrawingCanvas.DefaultDrawingAttributes.Width);
+                ColorPreview.Fill = System.Windows.Media.Brushes.White;
+            } else
+            {
+                SolidColorBrush preview_color = new(DrawingCanvas.DefaultDrawingAttributes.Color);
+                ColorPreview.Fill = preview_color;
+            }        
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
