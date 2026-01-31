@@ -29,7 +29,7 @@ namespace PaintOverlay
         private enum ShapeTypes { Ellipse, Rectangle, Triangle }
         public bool CanDraw { get; set; } = true; // Either fix or remove
         private bool DrawShape = false;
-        private int ShapeHeight = 100, ShapeWidth = 100;
+        private double ShapeHeight = 100.0, ShapeWidth = 100.0;
         private bool ChangingBrush = false;
 
         #region Brush Types
@@ -260,6 +260,16 @@ namespace PaintOverlay
             System.Windows.Application.Current.Shutdown();
         }
 
+        private void Thickness_Changed(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void Rotation_Changed(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
         private async void DrawingCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (DrawShape)
@@ -268,77 +278,90 @@ namespace PaintOverlay
                 StylusPointCollection points = [];
                 double x, y;
                 Stroke stroke;
-                switch ((ShapeTypes)Shape.SelectedIndex)
+                if (IsShapeFilled.IsChecked == true) // Draw filled shapes
                 {
-                    case ShapeTypes.Ellipse:
-                        
-                        int radiusX = 75;
-                        int radiusY = 50;
+                    switch ((ShapeTypes)Shape.SelectedIndex)
+                    {
+                        case ShapeTypes.Ellipse:
+                            break;
+                        case ShapeTypes.Rectangle:
+                            break;
+                        case ShapeTypes.Triangle:
+                            break;
+                        default: // Draw nothing
+                            break;
+                    }
+                } else
+                {
+                    switch ((ShapeTypes)Shape.SelectedIndex)
+                    {
+                        case ShapeTypes.Ellipse: // Still needs to use input params
 
-                        for (int i = 0; i <= 360; i++)
-                        {
-                            double angle = i * Math.PI / 180;
-                            x = cursorPosition.X + radiusX * Math.Cos(angle);
-                            y = cursorPosition.Y + radiusY * Math.Sin(angle);
-                            points.Add(new StylusPoint(x, y));
-                        }
+                            for (int i = 0; i <= 360; i++)
+                            {
+                                double angle = i * Math.PI / 180;
+                                x = cursorPosition.X + (ShapeWidth / 2) * Math.Cos(angle);
+                                y = cursorPosition.Y + (ShapeHeight / 2) * Math.Sin(angle);
+                                points.Add(new StylusPoint(x, y));
+                            }
 
-                        stroke = new(points)
-                        {
-                            DrawingAttributes = ShapeAttributes
-                        };
-                        DrawingCanvas.Strokes.Add(stroke);
-                        break;
-                    case ShapeTypes.Rectangle:
-                        x = cursorPosition.X - (ShapeWidth / 2);
-                        y = cursorPosition.Y - (ShapeHeight / 2);
-                        points.Add(new StylusPoint(x, y)); // Top
+                            stroke = new(points)
+                            {
+                                DrawingAttributes = ShapeAttributes
+                            };
+                            DrawingCanvas.Strokes.Add(stroke);
+                            break;
+                        case ShapeTypes.Rectangle:
+                            x = cursorPosition.X - (ShapeWidth / 2);
+                            y = cursorPosition.Y - (ShapeHeight / 2);
+                            points.Add(new StylusPoint(x, y)); // Top
 
-                        x = cursorPosition.X + (ShapeWidth / 2);
-                        y = cursorPosition.Y - (ShapeHeight / 2);
-                        points.Add(new StylusPoint(x, y)); // Right
+                            x = cursorPosition.X + (ShapeWidth / 2);
+                            y = cursorPosition.Y - (ShapeHeight / 2);
+                            points.Add(new StylusPoint(x, y)); // Right
 
-                        x = cursorPosition.X + (ShapeWidth / 2);
-                        y = cursorPosition.Y + (ShapeHeight / 2);
-                        points.Add(new StylusPoint(x, y)); // Bottom
+                            x = cursorPosition.X + (ShapeWidth / 2);
+                            y = cursorPosition.Y + (ShapeHeight / 2);
+                            points.Add(new StylusPoint(x, y)); // Bottom
 
-                        x = cursorPosition.X - (ShapeWidth / 2);
-                        y = cursorPosition.Y + (ShapeHeight / 2);
-                        points.Add(new StylusPoint(x, y)); // Left
+                            x = cursorPosition.X - (ShapeWidth / 2);
+                            y = cursorPosition.Y + (ShapeHeight / 2);
+                            points.Add(new StylusPoint(x, y)); // Left
 
-                        x = cursorPosition.X - (ShapeWidth / 2);
-                        y = cursorPosition.Y - (ShapeHeight / 2);
-                        points.Add(new StylusPoint(x, y)); // Top again
-                        stroke = new(points)
-                        {
-                            DrawingAttributes = ShapeAttributes
-                        };
-                        DrawingCanvas.Strokes.Add(stroke);
-                        break;
-                    case ShapeTypes.Triangle:
-                        x = cursorPosition.X;
-                        y = cursorPosition.Y - (ShapeHeight / 2);
-                        points.Add(new StylusPoint(x, y)); // Top
+                            x = cursorPosition.X - (ShapeWidth / 2);
+                            y = cursorPosition.Y - (ShapeHeight / 2);
+                            points.Add(new StylusPoint(x, y)); // Top again
+                            stroke = new(points)
+                            {
+                                DrawingAttributes = ShapeAttributes
+                            };
+                            DrawingCanvas.Strokes.Add(stroke);
+                            break;
+                        case ShapeTypes.Triangle:
+                            x = cursorPosition.X;
+                            y = cursorPosition.Y - (ShapeHeight / 2);
+                            points.Add(new StylusPoint(x, y)); // Top
 
-                        x = cursorPosition.X + (ShapeWidth / 2);
-                        y = cursorPosition.Y + (ShapeHeight / 2);
-                        points.Add(new StylusPoint(x, y)); // Right
+                            x = cursorPosition.X + (ShapeWidth / 2);
+                            y = cursorPosition.Y + (ShapeHeight / 2);
+                            points.Add(new StylusPoint(x, y)); // Right
 
-                        x = cursorPosition.X - (ShapeWidth / 2);
-                        y = cursorPosition.Y + (ShapeHeight / 2);
-                        points.Add(new StylusPoint(x, y)); // Left
+                            x = cursorPosition.X - (ShapeWidth / 2);
+                            y = cursorPosition.Y + (ShapeHeight / 2);
+                            points.Add(new StylusPoint(x, y)); // Left
 
-                        x = cursorPosition.X;
-                        y = cursorPosition.Y - (ShapeHeight / 2);
-                        points.Add(new StylusPoint(x, y)); // Top
-                        stroke = new(points)
-                        {
-                            DrawingAttributes = ShapeAttributes
-                        };
-                        DrawingCanvas.Strokes.Add(stroke);
-                        break;
-                    default:
-                        break;
+                            x = cursorPosition.X;
+                            y = cursorPosition.Y - (ShapeHeight / 2);
+                            points.Add(new StylusPoint(x, y)); // Top
+                            stroke = new(points)
+                            {
+                                DrawingAttributes = ShapeAttributes
+                            };
+                            DrawingCanvas.Strokes.Add(stroke);
+                            break;
+                        default: // Draw nothing
+                            break;
+                    }
                 }
             }
         }
