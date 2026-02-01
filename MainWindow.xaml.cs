@@ -28,9 +28,10 @@ namespace PaintOverlay
         private enum BrushTypes {Pen, Highlighter, Shape, Eraser };
         private enum ShapeTypes { Ellipse, Rectangle, Triangle }
         public bool CanDraw { get; set; } = true; // Either fix or remove
-        private bool DrawShape = false;
+        private bool DrawShape = false; // Check if shape brush is selected during left mouse down
         private double ShapeHeight = 100.0, ShapeWidth = 100.0;
         private bool ChangingBrush = false;
+        private System.Windows.Media.Color ShapeColor = Colors.Black;
 
         #region Brush Types
         private readonly DrawingAttributes PenAttributes = new()
@@ -52,7 +53,7 @@ namespace PaintOverlay
 
         private readonly DrawingAttributes ShapeAttributes = new() // Make sure just the shape is drawn, not any pen
         {
-            Color = Colors.Black,
+            Color = Colors.Transparent,
             Height = 2,
             Width = 2,
         };
@@ -171,7 +172,8 @@ namespace PaintOverlay
                     HighlighterAttributes.Color = color;
                     break;
                 case BrushTypes.Shape:
-                    return; // Do nothing for now, want to keep track of color of rectangle without drawing dot in middle (two separate attributes for shape?)
+                    ShapeColor = color;
+                    break;
                 case BrushTypes.Eraser:
                     return; // Do nothing
                 default:
@@ -187,47 +189,44 @@ namespace PaintOverlay
                 return;
             ChangingBrush = true; // Prevent Size_Changed from running when text box values are changed
             Shape.IsEnabled = DrawShape = false;
-            switch((BrushTypes)Brush.SelectedIndex)
+            DrawingCanvas.EditingMode = InkCanvasEditingMode.Ink; // In case of changing from eraser brush type
+            switch ((BrushTypes)Brush.SelectedIndex)
             {
                 case BrushTypes.Pen:
-                    DrawingCanvas.DefaultDrawingAttributes = PenAttributes;
+                    DrawingCanvas.DefaultDrawingAttributes = PenAttributes;      
+                    LengthInput.Text = DrawingCanvas.DefaultDrawingAttributes.Height.ToString();
+                    WidthInput.Text = DrawingCanvas.DefaultDrawingAttributes.Width.ToString();
+                    ColorPreview.Fill = new SolidColorBrush(DrawingCanvas.DefaultDrawingAttributes.Color);
                     break;
                 case BrushTypes.Highlighter:
                     DrawingCanvas.DefaultDrawingAttributes = HighlighterAttributes;
-                    break;
-                case BrushTypes.Eraser:
-                    DrawingCanvas.DefaultDrawingAttributes = EraserAttributes;
+                    LengthInput.Text = DrawingCanvas.DefaultDrawingAttributes.Height.ToString();
+                    WidthInput.Text = DrawingCanvas.DefaultDrawingAttributes.Width.ToString();
+                    ColorPreview.Fill = new SolidColorBrush(DrawingCanvas.DefaultDrawingAttributes.Color);
                     break;
                 case BrushTypes.Shape:
                     DrawingCanvas.DefaultDrawingAttributes = ShapeAttributes;
-                    Shape.IsEnabled = DrawShape = true;
+                    Shape.IsEnabled = DrawShape = true; // Enable shape settings
+                    LengthInput.Text = ShapeHeight.ToString(); // Size of shape is different from size of each point that makes up shape
+                    WidthInput.Text = ShapeWidth.ToString();
+                    ColorPreview.Fill = new SolidColorBrush(ShapeColor); // Use ShapeColor to prevent drawing with pen after drawing shape
                     break;
-                default:
+                case BrushTypes.Eraser:
+                    DrawingCanvas.DefaultDrawingAttributes = EraserAttributes;
+                    LengthInput.Text = DrawingCanvas.DefaultDrawingAttributes.Height.ToString();
+                    WidthInput.Text = DrawingCanvas.DefaultDrawingAttributes.Width.ToString();
+                    DrawingCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint; // Set to eraser editing mode
+                    DrawingCanvas.EraserShape = new EllipseStylusShape(DrawingCanvas.DefaultDrawingAttributes.Height, DrawingCanvas.DefaultDrawingAttributes.Width);
+                    ColorPreview.Fill = System.Windows.Media.Brushes.White;
+                    break;
+                default: // Same as BrushTypes.Pen
                     DrawingCanvas.DefaultDrawingAttributes = PenAttributes;
+                    LengthInput.Text = DrawingCanvas.DefaultDrawingAttributes.Height.ToString();
+                    WidthInput.Text = DrawingCanvas.DefaultDrawingAttributes.Width.ToString();                 
+                    ColorPreview.Fill = new SolidColorBrush(DrawingCanvas.DefaultDrawingAttributes.Color);
                     break;
-            }
-            DrawingCanvas.EditingMode = InkCanvasEditingMode.Ink;
-            if ((BrushTypes)Brush.SelectedIndex == BrushTypes.Shape)
-            {
-                LengthInput.Text = ShapeHeight.ToString();
-                WidthInput.Text = ShapeWidth.ToString();
-            } else
-            {
-                LengthInput.Text = DrawingCanvas.DefaultDrawingAttributes.Height.ToString();
-                WidthInput.Text = DrawingCanvas.DefaultDrawingAttributes.Width.ToString();
-
             }
             ChangingBrush = false;
-            if ((BrushTypes)Brush.SelectedIndex == BrushTypes.Eraser)
-            {
-                DrawingCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
-                DrawingCanvas.EraserShape = new EllipseStylusShape(DrawingCanvas.DefaultDrawingAttributes.Height, DrawingCanvas.DefaultDrawingAttributes.Width);
-                ColorPreview.Fill = System.Windows.Media.Brushes.White;
-            } else
-            {
-                SolidColorBrush preview_color = new(DrawingCanvas.DefaultDrawingAttributes.Color);
-                ColorPreview.Fill = preview_color;
-            }        
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
@@ -278,6 +277,7 @@ namespace PaintOverlay
                 StylusPointCollection points = [];
                 double x, y;
                 Stroke stroke;
+                ShapeAttributes.Color = ShapeColor;
                 if (IsShapeFilled.IsChecked == true) // Draw filled shapes
                 {
                     switch ((ShapeTypes)Shape.SelectedIndex)
@@ -307,7 +307,7 @@ namespace PaintOverlay
 
                             stroke = new(points)
                             {
-                                DrawingAttributes = ShapeAttributes
+                                DrawingAttributes = ShapeAttributes.Clone()
                             };
                             DrawingCanvas.Strokes.Add(stroke);
                             break;
@@ -333,7 +333,7 @@ namespace PaintOverlay
                             points.Add(new StylusPoint(x, y)); // Top again
                             stroke = new(points)
                             {
-                                DrawingAttributes = ShapeAttributes
+                                DrawingAttributes = ShapeAttributes.Clone()
                             };
                             DrawingCanvas.Strokes.Add(stroke);
                             break;
@@ -355,7 +355,7 @@ namespace PaintOverlay
                             points.Add(new StylusPoint(x, y)); // Top
                             stroke = new(points)
                             {
-                                DrawingAttributes = ShapeAttributes
+                                DrawingAttributes = ShapeAttributes.Clone()
                             };
                             DrawingCanvas.Strokes.Add(stroke);
                             break;
@@ -363,6 +363,7 @@ namespace PaintOverlay
                             break;
                     }
                 }
+                ShapeAttributes.Color = Colors.Transparent;
             }
         }
     }
