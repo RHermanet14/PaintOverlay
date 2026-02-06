@@ -86,9 +86,13 @@ namespace PaintOverlay
             {
                 DrawingMenu.Visibility = DrawingMenu.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
             }
-            if (Keyboard.IsKeyDown(Key.Z) && Keyboard.IsKeyDown(Key.LeftCtrl))
+            if (Keyboard.IsKeyDown(Key.Z) && Keyboard.IsKeyDown(Key.LeftCtrl) && this.IsActive)
             {
                 Undo_Canvas();
+            }
+            if (Keyboard.IsKeyDown(Key.F) && DrawShape && this.IsActive)
+            {
+                IsShapeFilled.IsChecked = !IsShapeFilled.IsChecked;
             }
         }
 
@@ -292,12 +296,55 @@ namespace PaintOverlay
                     {
                         case ShapeTypes.Ellipse:
                             ShapeAttributes.StylusTip = StylusTip.Ellipse;
+                            for (int i = 0; i <= 180; i++)
+                            {
+                                double angle = i * Math.PI / 180;
+                                double opposite_angle = (i + 180) * Math.PI / 180;
+                                x = cursorPosition.X + (ShapeWidth / 2) * Math.Cos(angle);
+                                y = cursorPosition.Y + (ShapeHeight / 2) * Math.Sin(angle);
+                                double opposite_x = cursorPosition.X + (ShapeWidth / 2) * Math.Cos(opposite_angle);
+                                double opposite_y = cursorPosition.Y + (ShapeHeight / 2) * Math.Sin(opposite_angle);
+                                points.Add(new StylusPoint(x, y));
+                                points.Add(new StylusPoint(opposite_x, opposite_y));
+                            }
+                            stroke = new(points)
+                            {
+                                DrawingAttributes = ShapeAttributes.Clone()
+                            };
+                            DrawingCanvas.Strokes.Add(stroke);
                             break;
-                        case ShapeTypes.Rectangle:
+                        case ShapeTypes.Rectangle:  
                             ShapeAttributes.StylusTip = StylusTip.Rectangle;
+                            for (int i = 0; i < ShapeWidth; i++)
+                            {
+                                x = cursorPosition.X - (ShapeWidth / 2) + i;
+                                y = cursorPosition.Y - (ShapeHeight / 2);
+                                points.Add(new StylusPoint(x, y));
+                                y = cursorPosition.Y + (ShapeHeight / 2);
+                                points.Add(new StylusPoint(x, y));
+                            }
+                            stroke = new(points)
+                            {
+                                DrawingAttributes = ShapeAttributes.Clone()
+                            };
+                            DrawingCanvas.Strokes.Add(stroke);
                             break;
                         case ShapeTypes.Triangle:
                             ShapeAttributes.StylusTip = StylusTip.Ellipse;
+                            for (int i = 0; i < ShapeWidth; i++)
+                            {
+                                x = cursorPosition.X - (ShapeWidth / 2.0) + i;
+                                double y1 = (i * (ShapeHeight / (ShapeWidth / 2.0))); // y at point i
+                                y = cursorPosition.Y - (ShapeHeight / 2.0) + Math.Abs(ShapeHeight - (y1));
+                                points.Add(new StylusPoint(x, y));
+                                y = cursorPosition.Y + (ShapeHeight / 2);
+                                points.Add(new StylusPoint(x, y));
+                            }
+                            stroke = new(points)
+                            {
+                                DrawingAttributes = ShapeAttributes.Clone()
+                            };
+                            DrawingCanvas.Strokes.Add(stroke);
                             break;
                         default: // Draw nothing
                             break;
@@ -306,7 +353,7 @@ namespace PaintOverlay
                 {
                     switch ((ShapeTypes)Shape.SelectedIndex)
                     {
-                        case ShapeTypes.Ellipse: // Still needs to use input params
+                        case ShapeTypes.Ellipse:
                             ShapeAttributes.StylusTip = StylusTip.Ellipse;
                             for (int i = 0; i <= 360; i++)
                             {
