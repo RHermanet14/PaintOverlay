@@ -188,7 +188,7 @@ namespace PaintOverlay
             if (DrawingCanvas == null)
                 return;
             ChangingBrush = true; // Prevent Size_Changed from running when text box values are changed
-            Shape.IsEnabled = DrawShape = false;
+            Shape.IsEnabled = DrawShape = ShapeSettings.IsEnabled = false; // Reset special options when changing from shape type
             DrawingCanvas.EditingMode = InkCanvasEditingMode.Ink; // In case of changing from eraser brush type
             switch ((BrushTypes)Brush.SelectedIndex)
             {
@@ -206,7 +206,7 @@ namespace PaintOverlay
                     break;
                 case BrushTypes.Shape:
                     DrawingCanvas.DefaultDrawingAttributes = ShapeAttributes;
-                    Shape.IsEnabled = DrawShape = true; // Enable shape settings
+                    Shape.IsEnabled = ShapeSettings.IsEnabled = DrawShape = true; // Enable shape settings
                     LengthInput.Text = ShapeHeight.ToString(); // Size of shape is different from size of each point that makes up shape
                     WidthInput.Text = ShapeWidth.ToString();
                     ColorPreview.Fill = new SolidColorBrush(ShapeColor); // Use ShapeColor to prevent drawing with pen after drawing shape
@@ -261,7 +261,15 @@ namespace PaintOverlay
 
         private void Thickness_Changed(object sender, TextChangedEventArgs e)
         {
-
+            if ((BrushTypes)Brush.SelectedIndex != BrushTypes.Shape) return;
+            if (int.TryParse(ThicknessInput.Text, out int thickness))
+            {
+                if (thickness > 100) thickness = 100;
+                if (thickness < 1) thickness = 1;
+                ThicknessInput.Text = thickness.ToString();
+                ShapeAttributes.Height = thickness;
+                ShapeAttributes.Width = thickness;
+            }
         }
 
         private void Rotation_Changed(object sender, TextChangedEventArgs e)
@@ -283,10 +291,13 @@ namespace PaintOverlay
                     switch ((ShapeTypes)Shape.SelectedIndex)
                     {
                         case ShapeTypes.Ellipse:
+                            ShapeAttributes.StylusTip = StylusTip.Ellipse;
                             break;
                         case ShapeTypes.Rectangle:
+                            ShapeAttributes.StylusTip = StylusTip.Rectangle;
                             break;
                         case ShapeTypes.Triangle:
+                            ShapeAttributes.StylusTip = StylusTip.Ellipse;
                             break;
                         default: // Draw nothing
                             break;
@@ -296,7 +307,7 @@ namespace PaintOverlay
                     switch ((ShapeTypes)Shape.SelectedIndex)
                     {
                         case ShapeTypes.Ellipse: // Still needs to use input params
-
+                            ShapeAttributes.StylusTip = StylusTip.Ellipse;
                             for (int i = 0; i <= 360; i++)
                             {
                                 double angle = i * Math.PI / 180;
@@ -312,6 +323,7 @@ namespace PaintOverlay
                             DrawingCanvas.Strokes.Add(stroke);
                             break;
                         case ShapeTypes.Rectangle:
+                            ShapeAttributes.StylusTip = StylusTip.Rectangle;
                             x = cursorPosition.X - (ShapeWidth / 2);
                             y = cursorPosition.Y - (ShapeHeight / 2);
                             points.Add(new StylusPoint(x, y)); // Top
@@ -338,6 +350,7 @@ namespace PaintOverlay
                             DrawingCanvas.Strokes.Add(stroke);
                             break;
                         case ShapeTypes.Triangle:
+                            ShapeAttributes.StylusTip = StylusTip.Ellipse;
                             x = cursorPosition.X;
                             y = cursorPosition.Y - (ShapeHeight / 2);
                             points.Add(new StylusPoint(x, y)); // Top
