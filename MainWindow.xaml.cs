@@ -278,17 +278,24 @@ namespace PaintOverlay
 
         private void Rotation_Changed(object sender, TextChangedEventArgs e)
         {
-
+            if ((BrushTypes)Brush.SelectedIndex != BrushTypes.Shape) return;
+            if (int.TryParse(RotationInput.Text, out int rotation))
+            {
+                if (rotation > 360) rotation = 360;
+                if (rotation < -360) rotation = -360;
+                RotationInput.Text = rotation.ToString();
+            }
         }
 
         private async void DrawingCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (DrawShape)
+            if (DrawShape && int.TryParse(RotationInput.Text, out int rotation_input))
             {
                 System.Windows.Point cursorPosition = e.GetPosition(DrawingCanvas);
                 StylusPointCollection points = [];
-                double x, y;
+                double x, y, rotated_x, rotated_y;
                 Stroke stroke;
+                double input_angle = rotation_input * Math.PI / 180;
                 ShapeAttributes.Color = ShapeColor;
                 if (IsShapeFilled.IsChecked == true) // Draw filled shapes
                 {
@@ -358,10 +365,14 @@ namespace PaintOverlay
                             for (int i = 0; i <= 360; i++)
                             {
                                 double angle = i * Math.PI / 180;
-                                x = cursorPosition.X + (ShapeWidth / 2) * Math.Cos(angle);
-                                y = cursorPosition.Y + (ShapeHeight / 2) * Math.Sin(angle);
-                                points.Add(new StylusPoint(x, y));
+                                x = (ShapeWidth / 2) * Math.Cos(angle);
+                                y = (ShapeHeight / 2) * Math.Sin(angle);
+                                rotated_x = cursorPosition.X + (x * Math.Cos(input_angle)) - (y * Math.Sin(input_angle));
+                                rotated_y = cursorPosition.Y + (x * Math.Sin(input_angle)) + (y * Math.Cos(input_angle));
+                                points.Add(new StylusPoint(rotated_x, rotated_y));
                             }
+                            //x' = xcos(0) - ysin(0)
+                            //y' = xsin(0) + ycos(0)
 
                             stroke = new(points)
                             {

@@ -59,7 +59,7 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="Filled:" TextAlignment="Center" VerticalAlignment="Center"/>
                 <CheckBox x:Name="IsShapeFilled" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <TextBlock Text="Rotation:" TextAlignment="Center" VerticalAlignment="Center" Grid.Row="1"/>
+                <TextBlock Text="Rotation:" TextAlignment="Center" VerticalAlignment="Center" Grid.Row="1" ToolTip="In Degrees"/>
                 <TextBox x:Name="RotationInput" Grid.Row="1" Grid.Column="1" TextChanged="Rotation_Changed" Text="0"/>
                 <TextBlock Text="Thickness:" TextAlignment="Center" VerticalAlignment="Center" Grid.Row="2"/>
                 <TextBox x:Name="ThicknessInput" Grid.Row="2" Grid.Column="1" TextChanged="Thickness_Changed" Text="2"/>
