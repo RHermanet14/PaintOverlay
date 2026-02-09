@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -287,9 +288,14 @@ namespace PaintOverlay
             }
         }
 
-        private (double rotated_x, double rotated_y) rotate_coords(double x, double y)
+        private (double rotated_x, double rotated_y) rotate_coords(System.Windows.Point cursorPosition, double x, double y)
         {
-            return (0,0); // Helper function TODO
+            if (!int.TryParse(RotationInput.Text, out int rotation_input)) return (0,0);
+            double input_angle = rotation_input * Math.PI / 180;
+            double rotated_x, rotated_y;
+            rotated_x = cursorPosition.X + (x * Math.Cos(input_angle)) - (y * Math.Sin(input_angle));
+            rotated_y = cursorPosition.Y + (x * Math.Sin(input_angle)) + (y * Math.Cos(input_angle));
+            return (rotated_x, rotated_y);
         }
 
         private async void DrawingCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -312,15 +318,9 @@ namespace PaintOverlay
                             {
                                 double angle = i * Math.PI / 180;
                                 double opposite_angle = (i + 180) * Math.PI / 180;
-                                x = (ShapeWidth / 2) * Math.Cos(angle);
-                                y = (ShapeHeight / 2) * Math.Sin(angle);
-                                double opposite_x = (ShapeWidth / 2) * Math.Cos(opposite_angle);
-                                double opposite_y = (ShapeHeight / 2) * Math.Sin(opposite_angle);
-                                rotated_x = cursorPosition.X + (x * Math.Cos(input_angle)) - (y * Math.Sin(input_angle));
-                                rotated_y = cursorPosition.Y + (x * Math.Sin(input_angle)) + (y * Math.Cos(input_angle));
+                                (rotated_x, rotated_y) = rotate_coords(cursorPosition, (ShapeWidth / 2) * Math.Cos(angle), (ShapeHeight / 2) * Math.Sin(angle));
                                 points.Add(new StylusPoint(rotated_x, rotated_y));
-                                rotated_x = cursorPosition.X + (opposite_x * Math.Cos(input_angle)) - (opposite_y * Math.Sin(input_angle));
-                                rotated_y = cursorPosition.Y + (opposite_x * Math.Sin(input_angle)) + (opposite_y * Math.Cos(input_angle));
+                                (rotated_x, rotated_y) = rotate_coords(cursorPosition, (ShapeWidth / 2) * Math.Cos(opposite_angle), (ShapeHeight / 2) * Math.Sin(opposite_angle));
                                 points.Add(new StylusPoint(rotated_x, rotated_y));
                             }
                             stroke = new(points)
@@ -333,16 +333,9 @@ namespace PaintOverlay
                             ShapeAttributes.StylusTip = StylusTip.Rectangle;
                             for (int i = 0; i < ShapeWidth; i++)
                             {
-                                x = - (ShapeWidth / 2) + i;
-                                y = - (ShapeHeight / 2);
-
-                                rotated_x = cursorPosition.X + (x * Math.Cos(input_angle)) - (y * Math.Sin(input_angle));
-                                rotated_y = cursorPosition.Y + (x * Math.Sin(input_angle)) + (y * Math.Cos(input_angle));
+                                (rotated_x, rotated_y) = rotate_coords(cursorPosition, -(ShapeWidth / 2) + i, -(ShapeHeight / 2));
                                 points.Add(new StylusPoint(rotated_x, rotated_y));
-
-                                y = (ShapeHeight / 2);
-                                rotated_x = cursorPosition.X + (x * Math.Cos(input_angle)) - (y * Math.Sin(input_angle));
-                                rotated_y = cursorPosition.Y + (x * Math.Sin(input_angle)) + (y * Math.Cos(input_angle));
+                                (rotated_x, rotated_y) = rotate_coords(cursorPosition, -(ShapeWidth / 2) + i, (ShapeHeight / 2));
                                 points.Add(new StylusPoint(rotated_x, rotated_y));
                             }
                             stroke = new(points)
@@ -355,17 +348,10 @@ namespace PaintOverlay
                             ShapeAttributes.StylusTip = StylusTip.Ellipse;
                             for (int i = 0; i < ShapeWidth; i++)
                             {
-                                x = -(ShapeWidth / 2.0) + i;
                                 double y1 = (i * (ShapeHeight / (ShapeWidth / 2.0))); // y at point i
-                                y = -(ShapeHeight / 2.0) + Math.Abs(ShapeHeight - (y1));
-
-                                rotated_x = cursorPosition.X + (x * Math.Cos(input_angle)) - (y * Math.Sin(input_angle));
-                                rotated_y = cursorPosition.Y + (x * Math.Sin(input_angle)) + (y * Math.Cos(input_angle));
+                                (rotated_x, rotated_y) = rotate_coords(cursorPosition, -(ShapeWidth / 2.0) + i, -(ShapeHeight / 2.0) + Math.Abs(ShapeHeight - (y1)));
                                 points.Add(new StylusPoint(rotated_x, rotated_y));
-
-                                y = (ShapeHeight / 2);
-                                rotated_x = cursorPosition.X + (x * Math.Cos(input_angle)) - (y * Math.Sin(input_angle));
-                                rotated_y = cursorPosition.Y + (x * Math.Sin(input_angle)) + (y * Math.Cos(input_angle));
+                                (rotated_x, rotated_y) = rotate_coords(cursorPosition, -(ShapeWidth / 2.0) + i, (ShapeHeight / 2));
                                 points.Add(new StylusPoint(rotated_x, rotated_y));
                             }
                             stroke = new(points)
@@ -386,10 +372,7 @@ namespace PaintOverlay
                             for (int i = 0; i <= 360; i++)
                             {
                                 double angle = i * Math.PI / 180;
-                                x = (ShapeWidth / 2) * Math.Cos(angle);
-                                y = (ShapeHeight / 2) * Math.Sin(angle);
-                                rotated_x = cursorPosition.X + (x * Math.Cos(input_angle)) - (y * Math.Sin(input_angle));
-                                rotated_y = cursorPosition.Y + (x * Math.Sin(input_angle)) + (y * Math.Cos(input_angle));
+                                (rotated_x, rotated_y) = rotate_coords(cursorPosition, (ShapeWidth / 2) * Math.Cos(angle), (ShapeHeight / 2) * Math.Sin(angle));
                                 points.Add(new StylusPoint(rotated_x, rotated_y));
                             }
                             stroke = new(points)
@@ -400,34 +383,19 @@ namespace PaintOverlay
                             break;
                         case ShapeTypes.Rectangle:
                             ShapeAttributes.StylusTip = StylusTip.Rectangle;
-                            x = -(ShapeWidth / 2);
-                            y = -(ShapeHeight / 2);
-                            rotated_x = cursorPosition.X + (x * Math.Cos(input_angle)) - (y * Math.Sin(input_angle));
-                            rotated_y = cursorPosition.Y + (x * Math.Sin(input_angle)) + (y * Math.Cos(input_angle));
+                            (rotated_x, rotated_y) = rotate_coords(cursorPosition, -(ShapeWidth / 2), -(ShapeHeight / 2));
                             points.Add(new StylusPoint(rotated_x, rotated_y)); // Top
 
-                            x = (ShapeWidth / 2);
-                            y = -(ShapeHeight / 2);
-                            rotated_x = cursorPosition.X + (x * Math.Cos(input_angle)) - (y * Math.Sin(input_angle));
-                            rotated_y = cursorPosition.Y + (x * Math.Sin(input_angle)) + (y * Math.Cos(input_angle));
+                            (rotated_x, rotated_y) = rotate_coords(cursorPosition, (ShapeWidth / 2), -(ShapeHeight / 2));
                             points.Add(new StylusPoint(rotated_x, rotated_y)); // Right
 
-                            x = (ShapeWidth / 2);
-                            y = (ShapeHeight / 2);
-                            rotated_x = cursorPosition.X + (x * Math.Cos(input_angle)) - (y * Math.Sin(input_angle));
-                            rotated_y = cursorPosition.Y + (x * Math.Sin(input_angle)) + (y * Math.Cos(input_angle));
+                            (rotated_x, rotated_y) = rotate_coords(cursorPosition, (ShapeWidth / 2), (ShapeHeight / 2));
                             points.Add(new StylusPoint(rotated_x, rotated_y)); // Bottom
 
-                            x = -(ShapeWidth / 2);
-                            y = (ShapeHeight / 2);
-                            rotated_x = cursorPosition.X + (x * Math.Cos(input_angle)) - (y * Math.Sin(input_angle));
-                            rotated_y = cursorPosition.Y + (x * Math.Sin(input_angle)) + (y * Math.Cos(input_angle));
+                            (rotated_x, rotated_y) = rotate_coords(cursorPosition, -(ShapeWidth / 2), (ShapeHeight / 2));
                             points.Add(new StylusPoint(rotated_x, rotated_y)); // Left
 
-                            x = -(ShapeWidth / 2);
-                            y = -(ShapeHeight / 2);
-                            rotated_x = cursorPosition.X + (x * Math.Cos(input_angle)) - (y * Math.Sin(input_angle));
-                            rotated_y = cursorPosition.Y + (x * Math.Sin(input_angle)) + (y * Math.Cos(input_angle));
+                            (rotated_x, rotated_y) = rotate_coords(cursorPosition, -(ShapeWidth / 2), -(ShapeHeight / 2));
                             points.Add(new StylusPoint(rotated_x, rotated_y)); // Top again
                             stroke = new(points)
                             {
@@ -437,28 +405,17 @@ namespace PaintOverlay
                             break;
                         case ShapeTypes.Triangle:
                             ShapeAttributes.StylusTip = StylusTip.Ellipse;
-                            x = 0;
-                            y = -(ShapeHeight / 2);
-                            rotated_x = cursorPosition.X + (x * Math.Cos(input_angle)) - (y * Math.Sin(input_angle));
-                            rotated_y = cursorPosition.Y + (x * Math.Sin(input_angle)) + (y * Math.Cos(input_angle));
+
+                            (rotated_x, rotated_y) = rotate_coords(cursorPosition, 0, -(ShapeHeight / 2));
                             points.Add(new StylusPoint(rotated_x, rotated_y)); // Top
 
-                            x = (ShapeWidth / 2);
-                            y = (ShapeHeight / 2);
-                            rotated_x = cursorPosition.X + (x * Math.Cos(input_angle)) - (y * Math.Sin(input_angle));
-                            rotated_y = cursorPosition.Y + (x * Math.Sin(input_angle)) + (y * Math.Cos(input_angle));
+                            (rotated_x, rotated_y) = rotate_coords(cursorPosition, (ShapeWidth / 2), (ShapeHeight / 2));
                             points.Add(new StylusPoint(rotated_x, rotated_y)); ; // Right
 
-                            x = -(ShapeWidth / 2);
-                            y = (ShapeHeight / 2);
-                            rotated_x = cursorPosition.X + (x * Math.Cos(input_angle)) - (y * Math.Sin(input_angle));
-                            rotated_y = cursorPosition.Y + (x * Math.Sin(input_angle)) + (y * Math.Cos(input_angle));
+                            (rotated_x, rotated_y) = rotate_coords(cursorPosition, -(ShapeWidth / 2), (ShapeHeight / 2));
                             points.Add(new StylusPoint(rotated_x, rotated_y)); // Left
 
-                            x = 0;
-                            y = -(ShapeHeight / 2);
-                            rotated_x = cursorPosition.X + (x * Math.Cos(input_angle)) - (y * Math.Sin(input_angle));
-                            rotated_y = cursorPosition.Y + (x * Math.Sin(input_angle)) + (y * Math.Cos(input_angle));
+                            (rotated_x, rotated_y) = rotate_coords(cursorPosition, 0, -(ShapeHeight / 2));
                             points.Add(new StylusPoint(rotated_x, rotated_y)); // Top
                             stroke = new(points)
                             {
