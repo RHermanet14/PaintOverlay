@@ -54,10 +54,6 @@ namespace PaintOverlay
                 }     
             }
         }
-        private void test()
-        {
-            // Enum in which to add attributes (dimensions, fill, stroke, thickness) to either rectangle or ellipse or custom (e.g triangle)
-        }
 
         private static bool Is_Setting_Default(string setting) { return string.Equals(Settings.Default.PropertyValues[setting].SerializedValue, Settings.Default.Properties[setting].DefaultValue); }
 

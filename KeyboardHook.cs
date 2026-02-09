@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Input;
+#pragma warning disable SYSLIB1054
 
 namespace PaintOverlay
 {
@@ -13,7 +14,7 @@ namespace PaintOverlay
         public ushort KeyInputType { get; set; }
     }
 
-    internal class KeyboardHook : IDisposable
+    internal partial class KeyboardHook : IDisposable
     {
         #region variables
         public static event EventHandler<KeyboardInputEventArgs>? KeyboardInput;
@@ -46,7 +47,7 @@ namespace PaintOverlay
             _keyboardHookID = SetKeyboardHook(_keyboardProc);
         }
 
-        private IntPtr SetKeyboardHook(HOOKPROC proc)
+        private static IntPtr SetKeyboardHook(HOOKPROC proc)
         {
             using Process curProcess = Process.GetCurrentProcess();
             using ProcessModule curModule = curProcess.MainModule!;

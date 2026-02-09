@@ -22,7 +22,7 @@ namespace PaintOverlay
         private readonly MainWindow _main;
         private SolidColorBrush? CustomColor;
         private bool SavingCustomColor = false;
-        private List<System.Windows.Shapes.Rectangle> Custom_Color_List = [];
+        private readonly List<System.Windows.Shapes.Rectangle> Custom_Color_List = [];
         private byte RColor, GColor, BColor;
 
         public ColorWindow(MainWindow main)
@@ -107,16 +107,18 @@ namespace PaintOverlay
             {
                 try
                 {
-                    int.TryParse(rect.Name.Substring(rect.Name.IndexOf('_') + 1), out int index); // DANGEROUS!!!
-                    if (SavingCustomColor == true && CustomColor != null)
+                    if (int.TryParse(rect.Name.AsSpan(rect.Name.IndexOf('_') + 1), out int index))
                     {
-                        rect.Fill = CustomColor;
-                        Modify_Custom_Color_Presets(index - 1);
+                        if (SavingCustomColor == true && CustomColor != null)
+                        {
+                            rect.Fill = CustomColor;
+                            Modify_Custom_Color_Presets(index - 1);
+                        }
+                        _main.Color_Changed(rect);
+                        string temp = rect.Name;
+                        temp = temp.Replace('_', ' ');
+                        ColorName.Text = temp;
                     }
-                    _main.Color_Changed(rect);
-                    string temp = rect.Name;
-                    temp = temp.Replace('_', ' ');
-                    ColorName.Text = temp;
                 } catch(Exception ex)
                 {
                     System.Windows.MessageBox.Show($"You probably didn't use the correct naming convention: {ex.Message}");
