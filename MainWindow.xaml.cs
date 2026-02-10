@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Reflection.Metadata;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -25,6 +26,7 @@ namespace PaintOverlay
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region variables
         private readonly KeyboardHook hook;
         private enum BrushTypes {Pen, Highlighter, Shape, Eraser };
         private enum ShapeTypes { Ellipse, Rectangle, Triangle }
@@ -33,6 +35,7 @@ namespace PaintOverlay
         private double ShapeHeight = 100.0, ShapeWidth = 100.0;
         private bool ChangingBrush = false;
         private System.Windows.Media.Color ShapeColor = Colors.Black;
+        #endregion
 
         #region Brush Types
         private readonly DrawingAttributes PenAttributes = new()
@@ -78,23 +81,32 @@ namespace PaintOverlay
         private void OnKeyboardInput(object? sender, EventArgs e)
         {
             if (!CanDraw) return;
-            if (Keyboard.IsKeyDown((Key)Properties.Settings.Default.Canvas_Visibility_Bind))
+            if (Keyboard.IsKeyDown((Key)Properties.Settings.Default.Canvas_Visibility_Bind)) // toggle canvas
             {
                 DrawingCanvas.Visibility = DrawingCanvas.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
                 this.Activate();
             }
-            if (Keyboard.IsKeyDown((Key)Properties.Settings.Default.Menu_Visibility_Bind) && PaintWindow.IsActive)
+            if (Keyboard.IsKeyDown((Key)Properties.Settings.Default.Menu_Visibility_Bind) && PaintWindow.IsActive) // toggle menu overhead visibility
             {
                 DrawingMenu.Visibility = DrawingMenu.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
             }
-            if (Keyboard.IsKeyDown(Key.Z) && Keyboard.IsKeyDown(Key.LeftCtrl) && this.IsActive)
+            if (Keyboard.IsKeyDown(Key.Z) && Keyboard.IsKeyDown(Key.LeftCtrl) && this.IsActive) // undo
             {
                 Undo_Canvas();
             }
-            if (Keyboard.IsKeyDown(Key.F) && DrawShape && this.IsActive)
+            if (Keyboard.IsKeyDown(Key.F) && DrawShape && this.IsActive) // Toggle fill
             {
                 IsShapeFilled.IsChecked = !IsShapeFilled.IsChecked;
             }
+            if (Keyboard.IsKeyDown(Key.V) && Keyboard.IsKeyDown(Key.LeftCtrl) && this.IsActive) // Paste iamge
+            {
+                Paste_Image();
+            }
+        }
+
+        private void Paste_Image()
+        {
+
         }
 
         private void Undo_Canvas()
@@ -103,10 +115,25 @@ namespace PaintOverlay
                 DrawingCanvas.Strokes.RemoveAt(DrawingCanvas.Strokes.Count - 1);
         }
 
+        private static string Strip_Input(System.Windows.Controls.TextBox input) // remove non numeric characters from textbox input
+        {
+#pragma warning disable SYSLIB1045
+            string input_string = Regex.Replace(input.Text, @"[^0-9]", "");
+#pragma warning restore SYSLIB1045
+            if (!string.IsNullOrEmpty(input.Text) && input_string.Length == 0)
+            {
+                input.Text = input_string = "1";
+            }
+            return input_string;
+        }
+
         private void Size_Changed(object sender, TextChangedEventArgs e)
         {
             if (Brush == null || ChangingBrush) return;
-            if (int.TryParse(LengthInput.Text, out int length) && int.TryParse(WidthInput.Text, out int width))
+            string length_string = Strip_Input(LengthInput);
+            string width_string = Strip_Input(WidthInput);
+
+            if (int.TryParse(length_string, out int length) && int.TryParse(width_string, out int width))
             {
                 if (length > 100)
                     length = 100;
@@ -267,7 +294,8 @@ namespace PaintOverlay
         private void Thickness_Changed(object sender, TextChangedEventArgs e)
         {
             if ((BrushTypes)Brush.SelectedIndex != BrushTypes.Shape) return;
-            if (int.TryParse(ThicknessInput.Text, out int thickness))
+            string thickness_input = Strip_Input(ThicknessInput);
+            if (int.TryParse(thickness_input, out int thickness))
             {
                 if (thickness > 100) thickness = 100;
                 if (thickness < 1) thickness = 1;
@@ -280,10 +308,11 @@ namespace PaintOverlay
         private void Rotation_Changed(object sender, TextChangedEventArgs e)
         {
             if ((BrushTypes)Brush.SelectedIndex != BrushTypes.Shape) return;
-            if (int.TryParse(RotationInput.Text, out int rotation))
+            string rotation_input = Strip_Input(RotationInput);
+            if (int.TryParse(rotation_input, out int rotation))
             {
                 if (rotation > 360) rotation = 360;
-                if (rotation < -360) rotation = -360;
+                if (rotation < 0) rotation = 0;
                 RotationInput.Text = rotation.ToString();
             }
         }
