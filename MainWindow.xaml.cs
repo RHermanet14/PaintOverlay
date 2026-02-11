@@ -1,23 +1,10 @@
-﻿using Microsoft.Windows.Themes;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Ink;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using System.Xml.Linq;
 
 namespace PaintOverlay
 {
@@ -98,15 +85,6 @@ namespace PaintOverlay
             {
                 IsShapeFilled.IsChecked = !IsShapeFilled.IsChecked;
             }
-            if (Keyboard.IsKeyDown(Key.V) && Keyboard.IsKeyDown(Key.LeftCtrl) && this.IsActive) // Paste iamge
-            {
-                Paste_Image();
-            }
-        }
-
-        private void Paste_Image()
-        {
-
         }
 
         private void Undo_Canvas()
